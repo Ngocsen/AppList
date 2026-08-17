@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="App List" />
+    <!-- Sếp đổi link icon cho Web Clip vào đây -->
+    <link rel="apple-touch-icon" href="https://github.com/Ngocsen/QC-Launcher/blob/master/apple-touch-icon.png?raw=true" />
+    <title>App List</title>
+    <!-- ... Toàn bộ style ở đây giữ nguyên như cũ ... -->
+    <style>
+        /* Copy nguyên cái style ở file cũ vào đây (do dài nên em rút gọn ở câu trả lời, sếp copy y chang cái cũ nhé) */
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: -apple-system, ... linear-gradient(...); }
+        .app-container { ... } 
+        /* ... */
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <h1>App List</h1>
+        <button class="pill-btn" id="getPluginBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            Get Plugin
+        </button>
+    </div>
+    <div class="app-grid" id="appGrid"></div>
+</div>
+
+<!-- Modal Danh sách App để thêm -->
+<div class="modal-overlay" id="addAppModal">
+    <div class="modal-content">
+        <h3>➕ Thêm ứng dụng</h3>
+        <div class="modal-list" id="modalList"></div>
+        <button class="close-modal" onclick="closeModal()">Đóng</button>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // 1. 📦 TẢI DỮ LIỆU TỪ FILE db.json BÊN NGOÀI
+    // ==========================================
+    let appDatabase = {}; // Biến rỗng ban đầu
+
+    // Dùng fetch để tự động tải file db.json trên GitHub Pages về
+    // Sếp nhớ chỉnh lại đường dẫn cho đúng tên repo của sếp nhé
+    const dbUrl = "https://github.com/Ngocsen/AppList/raw/refs/heads/master/bd.json"; 
+
+    fetch(dbUrl)
+        .then(response => response.json())
+        .then(data => {
+            appDatabase = data; // Nạp dữ liệu thành công vào biến
+            renderGrid();       // Vẽ lại giao diện
+            renderModal();      // Vẽ lại danh sách trong nút +
+        })
+        .catch(error => {
+            console.error("Lỗi tải db:", error);
+            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>`;
+        });
+
+    // ==========================================
+    // 2. ⚙️ LOGIC HIỂN THỊ VÀ MỞ APP (Cố định, không cần sửa)
+    // ==========================================
+    const STORAGE_KEY = 'myAppList';
+    const grid = document.getElementById('appGrid');
+    const modal = document.getElementById('addAppModal');
+    const modalList = document.getElementById('modalList');
+
+    function getSelectedApps() {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) return JSON.parse(stored);
+        // Mặc định 5 app đầu nếu chưa từng thêm
+        return ["vn.com.vng.zalogo", "com.deepseek.chat", "com.google.Maps", "com.facebook.Facebook", "com.instagram.instagram"];
+    }
+
+    function saveSelectedApps(ids) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
+        renderGrid();
+    }
+
+    function renderGrid() {
+        if(Object.keys(appDatabase).length === 0) return; // Chưa tải xong dữ liệu thì chờ
+        const ids = getSelectedApps();
+        grid.innerHTML = '';
+        ids.forEach(id => {
+            const data = appDatabase[id];
+            if(!data) return;
+            const item = createAppItem(id, data);
+            grid.appendChild(item);
+        });
+        const addBtn = document.createElement('div');
+        addBtn.className = 'app-item add-btn';
+        addBtn.innerHTML = `<div class="icon-wrapper" style="border:none; background:transparent; box-shadow:none;"><span style="font-size:32px; color:#4f46e5;">+</span></div><div class="app-name">Thêm</div>`;
+        addBtn.onclick = () => modal.classList.add('active');
+        grid.appendChild(addBtn);
+    }
+
+    function createAppItem(id, data) {
+        const div = document.createElement('div');
+        div.className = 'app-item';
+        div.onclick = () => openApp(id);
+        const useIcon = data.icon && data.icon.trim() !== "";
+        div.innerHTML = `
+            <div class="icon-wrapper">
+                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
+            </div>
+            <div class="app-name">${data.Name}</div>
+        `;
+        return div;
+    }
+
+    function renderModal() {
+        if(Object.keys(appDatabase).length === 0) return;
+        modalList.innerHTML = '';
+        Object.keys(appDatabase).forEach(id => {
+            const data = appDatabase[id];
+            const selectedIds = getSelectedApps();
+            if(selectedIds.includes(id)) return;
+            const item = document.createElement('div');
+            item.className = 'modal-item';
+            const useIcon = data.icon && data.icon.trim() !== "";
+            item.innerHTML = `
+                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
+                <span>${data.Name}</span>
+            `;
+            item.onclick = () => {
+                let current = getSelectedApps();
+                current.push(id);
+                saveSelectedApps(current);
+                closeModal();
+            };
+            modalList.appendChild(item);
+        });
+    }
+
+    function closeModal() { modal.classList.remove('active'); }
+    function openApp(bundleId) {
+        const shortcutName = "Open App Launcher"; 
+        window.location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(bundleId);
+    }
+    document.getElementById('getPluginBtn').onclick = () => {
+        // Sếp thay link Plugin của sếp vào đây
+        window.open("https://www.icloud.com/shortcuts/...", '_blank');
+    };
+    modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+</script>
+</body>
+</html>

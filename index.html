@@ -6,7 +6,6 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="App List" />
-    <!-- Sếp đổi link icon cho Web Clip vào đây -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <title>App List</title>
     
@@ -78,11 +77,13 @@
             transition: transform 0.1s;
         }
         .app-item:active { transform: scale(0.9); }
+        
+        /* --- PHẦN EM CHỈNH SỬA ĐỂ ICON FULL KHUNG --- */
         .icon-wrapper {
             width: 65px;
             height: 65px;
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.7);
+            background: #ffffff; /* Nền trắng sáng, chuẩn App Store */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -90,8 +91,16 @@
             margin-bottom: 8px;
             position: relative;
             border: 1px solid rgba(255,255,255,0.8);
+            overflow: hidden; /* Đảm bảo icon không tràn viền bo */
         }
-        .icon-wrapper img { width: 65%; height: 65%; object-fit: contain; }
+        .icon-wrapper img { 
+            width: 100%;       /* Đã tăng lên 100% để full khung */
+            height: 100%;      /* Đã tăng lên 100% để full khung */
+            object-fit: contain; /* Giữ tỷ lệ icon không bị méo */
+            border-radius: 16px; /* Bo tròn cho icon khớp với khung */
+        }
+        /* ------------------------------------------------- */
+        
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .add-btn {
@@ -168,11 +177,9 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU TỪ FILE bd.json BÊN NGOÀI (Đã sửa lỗi CORS)
+    // 1. 📦 TẢI DỮ LIỆU TỪ FILE bd.json BÊN NGOÀI
     // ==========================================
     let appDatabase = {}; 
-    
-    // Quan trọng: Vì bd.json nằm chung thư mục với index.html, dùng đường dẫn tương đối 'bd.json' là chuẩn nhất
     const dbUrl = "bd.json"; 
 
     fetch(dbUrl)
@@ -188,7 +195,7 @@
         });
 
     // ==========================================
-    // 2. ⚙️ LOGIC HIỂN THỊ VÀ MỞ APP (Cố định, không cần sửa)
+    // 2. ⚙️ LOGIC HIỂN THỊ VÀ MỞ APP
     // ==========================================
     const STORAGE_KEY = 'myAppList';
     const grid = document.getElementById('appGrid');
@@ -270,7 +277,6 @@
     }
     
     document.getElementById('getPluginBtn').onclick = () => {
-        // Sếp thay link Plugin của sếp vào đây
         window.open("https://www.icloud.com/shortcuts/bb6320058d1c46639372d41628ea2432", '_blank');
     };
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };

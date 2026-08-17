@@ -198,7 +198,7 @@
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) return JSON.parse(stored);
-        return ["vn.com.vng.zalogo", "com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
+        return ["vn.com.vng.zingalo", "com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
     function saveSelectedApps(ids) {
@@ -271,7 +271,7 @@
     
     document.getElementById('getPluginBtn').onclick = () => {
         // Sếp thay link Plugin của sếp vào đây
-        window.open("https://www.icloud.com/shortcuts/...", '_blank');
+        window.open("https://www.icloud.com/shortcuts/fb46166d7a5c42a89315e7ffd530b49e", '_blank');
     };
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 </script>

@@ -9,16 +9,143 @@
     <!-- Sếp đổi link icon cho Web Clip vào đây -->
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <title>App List</title>
-    <!-- ... Toàn bộ style ở đây giữ nguyên như cũ ... -->
+    
     <style>
-        /* Copy nguyên cái style ở file cũ vào đây (do dài nên em rút gọn ở câu trả lời, sếp copy y chang cái cũ nhé) */
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, ... linear-gradient(...); }
-        .app-container { ... } 
-        /* ... */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(145deg, #e0e7ff 0%, #a5b4fc 40%, #c4b5fd 100%);
+            min-height: 100vh;
+            padding: 20px;
+            padding-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border-radius: 40px;
+            padding: 24px 20px 32px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 0 4px;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #1e1e2f;
+            letter-spacing: -0.5px;
+        }
+        .pill-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .pill-btn:active { transform: scale(0.96); }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 16px;
+            justify-items: center;
+        }
+        .app-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            width: 100%;
+            transition: transform 0.1s;
+        }
+        .app-item:active { transform: scale(0.9); }
+        .icon-wrapper {
+            width: 62px;
+            height: 62px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            margin-bottom: 8px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.8);
+        }
+        .icon-wrapper img { width: 65%; height: 65%; object-fit: contain; }
+        .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
+        .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .add-btn {
+            background: rgba(255, 255, 255, 0.25);
+            border: 2px dashed rgba(255, 255, 255, 0.6);
+            color: #4f46e5;
+            font-size: 28px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-radius: 16px;
+        }
+        .add-btn:active { background: rgba(255, 255, 255, 0.4); transform: scale(0.9); }
+        .add-btn .app-name { margin-top: 6px; font-weight: 600; color: #4f46e5; }
+        
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            width: 85%; max-width: 380px;
+            max-height: 70vh;
+            border-radius: 28px;
+            padding: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            overflow-y: auto;
+        }
+        .modal-content h3 { font-size: 18px; text-align: center; margin-bottom: 12px; color: #1e1e2f; }
+        .modal-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .modal-item {
+            display: flex; flex-direction: column; align-items: center;
+            background: rgba(255,255,255,0.5); padding: 10px; border-radius: 16px;
+            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        }
+        .modal-item:active { background: rgba(255,255,255,0.9); border-color: #4f46e5; transform: scale(0.95); }
+        .modal-item img { width: 40px; height: 40px; margin-bottom: 4px; object-fit: contain; }
+        .modal-item .fallback-text { font-size: 18px; font-weight: 600; display: none; }
+        .modal-item span { font-size: 10px; text-align: center; color: #333; }
+        .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
     </style>
 </head>
 <body>
+
 <div class="app-container">
     <div class="header">
         <h1>App List</h1>
@@ -41,24 +168,23 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU TỪ FILE db.json BÊN NGOÀI
+    // 1. 📦 TẢI DỮ LIỆU TỪ FILE bd.json BÊN NGOÀI (Đã sửa lỗi CORS)
     // ==========================================
-    let appDatabase = {}; // Biến rỗng ban đầu
-
-    // Dùng fetch để tự động tải file db.json trên GitHub Pages về
-    // Sếp nhớ chỉnh lại đường dẫn cho đúng tên repo của sếp nhé
-    const dbUrl = "https://github.com/Ngocsen/AppList/raw/refs/heads/master/bd.json"; 
+    let appDatabase = {}; 
+    
+    // Quan trọng: Vì bd.json nằm chung thư mục với index.html, dùng đường dẫn tương đối 'bd.json' là chuẩn nhất
+    const dbUrl = "bd.json"; 
 
     fetch(dbUrl)
         .then(response => response.json())
         .then(data => {
-            appDatabase = data; // Nạp dữ liệu thành công vào biến
-            renderGrid();       // Vẽ lại giao diện
-            renderModal();      // Vẽ lại danh sách trong nút +
+            appDatabase = data; 
+            renderGrid();       
+            renderModal();      
         })
         .catch(error => {
             console.error("Lỗi tải db:", error);
-            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1;">Lỗi tải dữ liệu. Vui lòng thử lại.</p>`;
+            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">Lỗi tải dữ liệu. Vui lòng thử lại sau khi xóa cache Safari.</p>`;
         });
 
     // ==========================================
@@ -72,7 +198,6 @@
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) return JSON.parse(stored);
-        // Mặc định 5 app đầu nếu chưa từng thêm
         return ["vn.com.vng.zalogo", "com.deepseek.chat", "com.google.Maps", "com.facebook.Facebook", "com.instagram.instagram"];
     }
 
@@ -82,7 +207,7 @@
     }
 
     function renderGrid() {
-        if(Object.keys(appDatabase).length === 0) return; // Chưa tải xong dữ liệu thì chờ
+        if(Object.keys(appDatabase).length === 0) return; 
         const ids = getSelectedApps();
         grid.innerHTML = '';
         ids.forEach(id => {
@@ -143,6 +268,7 @@
         const shortcutName = "Open App Launcher"; 
         window.location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(bundleId);
     }
+    
     document.getElementById('getPluginBtn').onclick = () => {
         // Sếp thay link Plugin của sếp vào đây
         window.open("https://www.icloud.com/shortcuts/...", '_blank');

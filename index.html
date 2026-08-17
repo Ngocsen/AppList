@@ -78,10 +78,10 @@
         }
         .app-item:active { transform: scale(0.9); }
         
-        /* --- PHẦN EM CHỈNH SỬA ĐỂ ICON FULL KHUNG --- */
+        /* --- PHẦN CHỈNH SỬA ĐỂ ICON FULL KHUNG --- */
         .icon-wrapper {
-            width: 65px;
-            height: 65px;
+            width: 60px;
+            height: 60px;
             border-radius: 16px;
             background: #ffffff; /* Nền trắng sáng, chuẩn App Store */
             display: flex;
@@ -169,9 +169,9 @@
 <!-- Modal Danh sách App để thêm -->
 <div class="modal-overlay" id="addAppModal">
     <div class="modal-content">
-        <h3>➕ Thêm ứng dụng</h3>
+        <h3>➕ Add App</h3>
         <div class="modal-list" id="modalList"></div>
-        <button class="close-modal" onclick="closeModal()">Đóng</button>
+        <button class="close-modal" onclick="closeModal()">Close</button>
     </div>
 </div>
 
@@ -205,7 +205,7 @@
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) return JSON.parse(stored);
-        return ["vn.com.vng.zingalo", "com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
+        return ["com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
     function saveSelectedApps(ids) {

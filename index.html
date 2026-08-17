@@ -11,32 +11,49 @@
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(145deg, #e0e7ff 0%, #a5b4fc 40%, #c4b5fd 100%);
+            /* Hiệu ứng nền chuyển động kiểu Neon/Siri */
+            background: linear-gradient(135deg, #d4bbfc, #8ec5fc, #a78bfa, #7dd3fc);
+            background-size: 300% 300%;
+            animation: gradientShift 8s ease infinite;
             min-height: 100vh;
-            padding: 20px;
-            padding-top: 100px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
+            /* Dâng khung lên gần trên cùng */
+            padding: 40px 20px; 
         }
+
+        /* Keyframes tạo hiệu ứng chuyển động giống Siri */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .app-container {
             width: 100%;
             max-width: 420px;
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             border-radius: 40px;
             padding: 24px 20px 32px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,0.8);
-            border: 1px solid rgba(255, 255, 255, 0.4);
+            /* Tạo hiệu ứng phát sáng neon mờ nổi khung lên */
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 
+                        0 0 40px rgba(139, 92, 246, 0.15),
+                        inset 0 0 20px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: box-shadow 0.3s ease, background 0.3s ease, border 0.3s ease;
         }
+        
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding: 0 4px;
         }
         .header h1 {
@@ -62,12 +79,15 @@
             gap: 6px;
         }
         .pill-btn:active { transform: scale(0.96); }
+        
+        /* --- CHỈNH LẠI GRID: 4 CỘT MẶC ĐỊNH --- */
         .app-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px 10px;
             justify-items: center;
         }
+        
         .app-item {
             display: flex;
             flex-direction: column;
@@ -78,12 +98,11 @@
         }
         .app-item:active { transform: scale(0.9); }
         
-        /* --- PHẦN CHỈNH SỬA ĐỂ ICON FULL KHUNG --- */
         .icon-wrapper {
             width: 60px;
             height: 60px;
             border-radius: 16px;
-            background: #ffffff; /* Nền trắng sáng, chuẩn App Store */
+            background: #ffffff; 
             display: flex;
             align-items: center;
             justify-content: center;
@@ -91,18 +110,17 @@
             margin-bottom: 8px;
             position: relative;
             border: 1px solid rgba(255,255,255,0.8);
-            overflow: hidden; /* Đảm bảo icon không tràn viền bo */
+            overflow: hidden; 
         }
         .icon-wrapper img { 
-            width: 100%;       /* Đã tăng lên 100% để full khung */
-            height: 100%;      /* Đã tăng lên 100% để full khung */
-            object-fit: contain; /* Giữ tỷ lệ icon không bị méo */
-            border-radius: 16px; /* Bo tròn cho icon khớp với khung */
+            width: 100%;      
+            height: 100%;      
+            object-fit: contain; 
+            border-radius: 16px; 
         }
-        /* ------------------------------------------------- */
-        
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
         .add-btn {
             background: rgba(255, 255, 255, 0.25);
             border: 2px dashed rgba(255, 255, 255, 0.6);
@@ -112,10 +130,17 @@
             cursor: pointer;
             transition: all 0.2s;
             border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
         }
         .add-btn:active { background: rgba(255, 255, 255, 0.4); transform: scale(0.9); }
         .add-btn .app-name { margin-top: 6px; font-weight: 600; color: #4f46e5; }
         
+        /* MODAL */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.4);
@@ -151,6 +176,34 @@
         .modal-item .fallback-text { font-size: 18px; font-weight: 600; display: none; }
         .modal-item span { font-size: 10px; text-align: center; color: #333; }
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
+
+        /* --- RESPONSIVE CHO IPAD & MÀN TO --- */
+        @media (min-width: 640px) { 
+            .app-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } /* Màn iPad Mini, hiện 5 cột */
+        }
+        @media (min-width: 900px) { 
+            .app-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; } /* Màn iPad Pro, hiện 6 cột */
+        }
+
+        /* --- TỰ ĐỘNG NHẬN CHẾ ĐỘ SÁNG/TỐI (Dark Mode) --- */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1e1b4b, #0f172a, #2e1065, #1e3a8a);
+                background-size: 300% 300%;
+            }
+            .app-container {
+                background: rgba(30, 27, 75, 0.3); 
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 
+                            0 0 40px rgba(99, 102, 241, 0.2);
+            }
+            .header h1 { color: #f1f5f9; }
+            .app-name { color: #cbd5e1; }
+            .modal-content { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); }
+            .modal-content h3 { color: #f1f5f9; }
+            .modal-item { background: rgba(255,255,255,0.05); color: #f1f5f9; border: 1px solid rgba(255,255,255,0.05); }
+            .modal-item span { color: #cbd5e1; }
+        }
     </style>
 </head>
 <body>
@@ -225,7 +278,7 @@
         });
         const addBtn = document.createElement('div');
         addBtn.className = 'app-item add-btn';
-        addBtn.innerHTML = `<div class="icon-wrapper" style="border:none; background:transparent; box-shadow:none;"><span style="font-size:32px; color:#4f46e5;">+</span></div><div class="app-name">Thêm</div>`;
+        addBtn.innerHTML = `<span style="font-size:32px; color:#4f46e5;">+</span><div class="app-name">Thêm</div>`;
         addBtn.onclick = () => modal.classList.add('active');
         grid.appendChild(addBtn);
     }

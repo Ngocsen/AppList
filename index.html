@@ -91,7 +91,7 @@
             position: relative;
             border: 1px solid rgba(255,255,255,0.8);
         }
-        .icon-wrapper img { width: 65%; height: 65%; object-fit: contain; }
+        .icon-wrapper img { width: 80%; height: 80%; object-fit: contain; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .add-btn {
@@ -198,7 +198,7 @@
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) return JSON.parse(stored);
-        return ["vn.com.vng.zalogo", "com.deepseek.chat", "com.google.Maps", "com.facebook.Facebook", "com.instagram.instagram"];
+        return ["vn.com.vng.zalogo", "com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
     function saveSelectedApps(ids) {

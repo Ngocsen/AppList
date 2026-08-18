@@ -200,21 +200,23 @@
     let appDatabase = {}; 
     let socialData = {};
 
+    // Đã sửa lại cấu trúc Promise.all & catch để tránh lỗi dừng script
     Promise.all([
         fetch('db.json').then(res => res.json()),
         fetch('social.json').then(res => res.json())
-    ]).then(([db, social]) => {
+    ])
+    .then(([db, social]) => {
         appDatabase = db; 
         socialData = social;
         renderGrid();
         renderFooter();
         renderModal();
-        checkInstallStatus(); // Kiểm tra xem đã thêm vào màn hình chính chưa
-      .catch(error => {
-            console.error("Lỗi chi tiết:", error);
-            // Hiện lỗi cụ thể ra màn hình
-            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải JSON: <br> ${error.message}</p>`;
-        });
+        checkInstallStatus(); 
+    })
+    .catch(error => {
+        console.error("Lỗi chi tiết:", error);
+        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu: <br> ${error.message}</p>`;
+    });
 
     // ==========================================
     // 2. ⚙️ LOGIC CHÍNH
@@ -391,7 +393,7 @@
         // Icon mạng xã hội
         if(socialData) {
             const socialIcons = [
-                { key: 'email', icon: 'icon_email.png' }, // Sếp cần có file ảnh này
+                { key: 'email', icon: 'icon_email.png' }, 
                 { key: 'Follow', icon: 'icon_yt.png' },
                 { key: 'website', icon: 'icon_web.png' }
             ];
@@ -419,7 +421,7 @@
         };
         footer.appendChild(resetBtn);
 
-        // NÚT CLEAR SAFARI CACHE (CHỪA CHỖ CHO SẾP NHÚNG SCHEME)
+        // NÚT CLEAR SAFARI CACHE (Sếp đổi scheme tại đây nếu cần)
         const clearSafariBtn = document.createElement('button');
         clearSafariBtn.className = 'util-btn';
         clearSafariBtn.innerText = '🧹 Clear Cache';

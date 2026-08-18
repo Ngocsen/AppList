@@ -10,7 +10,7 @@
     <title>Sen Hub</title>
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background: linear-gradient(135deg, #d4bbfc, #8ec5fc, #a78bfa, #7dd3fc);
@@ -38,6 +38,7 @@
             padding: 24px 20px 20px;
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(139, 92, 246, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.6);
+            position: relative;
         }
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .header h1 { font-size: 26px; font-weight: 700; color: #1e1e2f; }
@@ -54,13 +55,31 @@
         @media (min-width: 900px) { .app-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .app-item { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
-        .app-item:active { transform: scale(0.9); }
+        .app-item.active-drag { transform: scale(0.95); opacity: 0.8; z-index: 10; }
         
-        .icon-wrapper { width: 60px; height: 60px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); }
+        .icon-wrapper { width: 60px; height: 60px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); transition: transform 0.2s; }
         .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
+        /* --- HIỆU ỨNG RUNG RINH & DẤU X KHI CHỈNH SỬA --- */
+        .edit-mode .app-item .icon-wrapper {
+            animation: shake 0.15s infinite alternate;
+        }
+        @keyframes shake {
+            0% { transform: rotate(-4deg); }
+            100% { transform: rotate(4deg); }
+        }
+        .remove-btn {
+            position: absolute; top: -8px; left: -8px;
+            width: 24px; height: 24px; background: #ff3b30; color: white;
+            border-radius: 50%; border: 2px solid white; font-size: 14px; font-weight: bold;
+            display: none; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 20; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .edit-mode .app-item .remove-btn { display: flex; }
+        .remove-btn:active { transform: scale(0.8); }
+
         .add-btn {
             background: rgba(255, 255, 255, 0.25); border: 2px dashed rgba(255, 255, 255, 0.6);
             color: #4f46e5; font-size: 28px; cursor: pointer; border-radius: 16px;
@@ -95,39 +114,28 @@
         .modal-item span { font-size: 10px; text-align: center; color: #333; }
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
-        /* FOOTER SOCIAL & UTILITY */
-        .footer-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
-        .social-icon { width: 24px; height: 24px; opacity: 0.7; cursor: pointer; transition: 0.2s; border-radius: 6px; background: transparent; border: none; padding: 0; }
+        /* FOOTER SOCIAL & UTILITY (CĂN GIỮA, BỎ NÚT CLEAR) */
+        .footer-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
+        
+        .social-icon { width: 28px; height: 28px; opacity: 0.7; cursor: pointer; transition: 0.2s; border-radius: 8px; background: transparent; border: none; padding: 0; display: flex; align-items: center; justify-content: center;}
         .social-icon:active { transform: scale(0.85); opacity: 1; }
-        .social-icon img { width: 100%; height: 100%; object-fit: contain; }
+        .social-icon img { width: 80%; height: 80%; object-fit: contain; }
         
         .util-btn {
-            font-size: 10px; padding: 4px 8px; background: rgba(255,255,255,0.3); border-radius: 12px;
-            color: #1e1e2f; opacity: 0.7; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
+            width: 28px; height: 28px; background: rgba(255,255,255,0.2); border-radius: 8px;
+            color: #1e1e2f; opacity: 0.7; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.2s;
+            font-size: 14px; padding: 0;
         }
-        .util-btn:active { opacity: 1; background: rgba(255,255,255,0.6); }
+        .util-btn:active { opacity: 1; background: rgba(255,255,255,0.4); transform: scale(0.9); }
 
-        /* LONG PRESS MENU */
-        .long-press-menu {
-            position: absolute; top: -10px; right: -10px;
-            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
-            border-radius: 16px; padding: 12px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            display: none; z-index: 50; width: 140px;
-        }
-        .menu-item { padding: 8px 16px; font-size: 14px; color: #1e1e2f; cursor: pointer; text-align: left; }
-        .menu-item:active { background: rgba(0,0,0,0.05); }
-        .menu-item.danger { color: #ff3b30; }
-
-        /* INSTALL OVERLAY (Add to Home Screen) */
+        /* INSTALL OVERLAY */
         .install-overlay {
             position: fixed; inset: 0; z-index: 9999;
             background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
             display: none; align-items: center; justify-content: center;
         }
-        .install-card {
-            background: white; border-radius: 32px; padding: 30px; width: 85%; max-width: 380px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.1); text-align: center;
-        }
+        .install-card { background: white; border-radius: 32px; padding: 30px; width: 85%; max-width: 380px; box-shadow: 0 30px 60px rgba(0,0,0,0.1); text-align: center; }
         .install-card h2 { font-size: 22px; margin-bottom: 10px; color: #1e1e2f; }
         .install-card p { font-size: 14px; color: #555; margin-bottom: 20px; }
         .mock-safari { background: #f0f0f0; border-radius: 20px; padding: 30px 10px 10px; display: inline-block; margin-bottom: 20px; position: relative;}
@@ -142,12 +150,10 @@
             .modal-content { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); }
             .modal-content h3, .modal-item span { color: #f1f5f9; }
             .modal-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); }
-            .long-press-menu { background: rgba(30, 27, 75, 0.85); color: #f1f5f9; }
-            .menu-item { color: #f1f5f9; }
-            .menu-item.danger { color: #ff6b5a; }
             .install-card { background: rgba(30, 27, 75, 0.95); }
             .install-card h2 { color: #f1f5f9; }
             .install-card p { color: #94a3b8; }
+            .util-btn { background: rgba(255,255,255,0.1); color: #f1f5f9; }
         }
     </style>
 </head>
@@ -177,10 +183,8 @@
     </div>
     <div class="app-grid" id="appGrid"></div>
 
-    <!-- FOOTER SOCIAL & UTILITY -->
-    <div class="footer-section" id="footerSection">
-        <!-- JS sẽ render icon social, reset, và clear safari vào đây -->
-    </div>
+    <!-- FOOTER SOCIAL & UTILITY (Căn giữa) -->
+    <div class="footer-section" id="footerSection"></div>
 </div>
 
 <!-- MODAL ADD APP -->
@@ -195,28 +199,12 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU (DB & SOCIAL)
+    // 1. 📦 TẢI DỮ LIỆU
     // ==========================================
-    let appDatabase = {}; 
-    let socialData = {};
-
-    // Đã sửa lại cấu trúc Promise.all & catch để tránh lỗi dừng script
-    Promise.all([
-        fetch('db.json').then(res => res.json()),
-        fetch('social.json').then(res => res.json())
-    ])
-    .then(([db, social]) => {
-        appDatabase = db; 
-        socialData = social;
-        renderGrid();
-        renderFooter();
-        renderModal();
-        checkInstallStatus(); 
-    })
-    .catch(error => {
-        console.error("Lỗi chi tiết:", error);
-        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu: <br> ${error.message}</p>`;
-    });
+    let appDatabase = {}; let socialData = {};
+    Promise.all([fetch('db.json').then(res => res.json()), fetch('social.json').then(res => res.json())])
+    .then(([db, social]) => { appDatabase = db; socialData = social; renderGrid(); renderFooter(); renderModal(); checkInstallStatus(); })
+    .catch(error => { console.error("Lỗi chi tiết:", error); document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu</p>`; });
 
     // ==========================================
     // 2. ⚙️ LOGIC CHÍNH
@@ -227,11 +215,16 @@
     const modal = document.getElementById('addAppModal');
     const modalList = document.getElementById('modalList');
 
+    // State cho chế độ chỉnh sửa (Rung rinh & Dấu X)
+    let isEditing = false;
+    let editTimer = null;
+    let touchStartY = 0, touchStartX = 0;
+    let isDragging = false;
+    let draggedId = null;
+
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-            try { return JSON.parse(stored); } catch(e) {}
-        }
+        if (stored) { try { return JSON.parse(stored); } catch(e) {} }
         return ["com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
@@ -250,8 +243,6 @@
             const item = createAppItem(id, data, index);
             grid.appendChild(item);
         });
-
-        // Hiện/Ẩn nút + dựa trên giới hạn 16
         if (ids.length < MAX_APPS) {
             const addBtn = document.createElement('div');
             addBtn.className = 'app-item add-btn';
@@ -262,68 +253,102 @@
         } else {
             document.getElementById('addBtn')?.remove();
         }
+        // Thoát chế độ chỉnh sửa sau khi render lại (để tránh rung rinh khi vừa sửa xong)
+        exitEditMode();
+    }
+
+    // --- XỬ LÝ EVENT CHẠM GIỮ & KÉO THẢ ---
+    function setupTouchEvents(div, id, index) {
+        let timer;
+        div.addEventListener('touchstart', (e) => {
+            if(e.target.closest('.remove-btn')) return; // Không kích hoạt khi bấm vào nút X
+            isDragging = false;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            timer = setTimeout(() => {
+                if(!isDragging) {
+                    e.preventDefault(); // Ngăn Safari hiện menu share
+                    enterEditMode(id);
+                }
+            }, 500);
+        }, { passive: false });
+
+        div.addEventListener('touchmove', (e) => {
+            if(isEditing) {
+                e.preventDefault(); // Ngăn cuộn trang khi đang drag
+                const touch = e.touches[0];
+                const dx = touch.clientX - touchStartX;
+                const dy = touch.clientY - touchStartY;
+                
+                if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                    isDragging = true;
+                    clearTimeout(timer);
+                    
+                    // Logic xác định vị trí thả (xác định phần tử đang nằm dưới ngón tay)
+                    const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
+                    const targetItem = elements.find(el => el.classList.contains('app-item') && el.id !== div.id);
+                    if(targetItem && targetItem.id) {
+                        moveAppToPos(id, targetItem.id);
+                    }
+                }
+            }
+        }, { passive: false });
+
+        div.addEventListener('touchend', (e) => {
+            clearTimeout(timer);
+            if(isEditing && !isDragging) {
+                // Nếu chạm 1 lần khi đang edit -> Không làm gì cả
+            }
+        });
+    }
+
+    function enterEditMode(id) {
+        isEditing = true;
+        grid.classList.add('edit-mode');
+    }
+
+    function exitEditMode() {
+        isEditing = false;
+        isDragging = false;
+        grid.classList.remove('edit-mode');
+    }
+
+    function moveAppToPos(dragId, targetId) {
+        let current = getSelectedApps();
+        const dragIndex = current.indexOf(dragId);
+        const targetIndex = current.indexOf(targetId);
+        if (dragIndex === -1 || targetIndex === -1 || dragIndex === targetIndex) return;
+        
+        // Di chuyển phần tử tới vị trí mới
+        current.splice(dragIndex, 1);
+        current.splice(targetIndex, 0, dragId);
+        saveSelectedApps(current);
     }
 
     function createAppItem(id, data, index) {
         const div = document.createElement('div');
         div.className = 'app-item';
-        div.onclick = () => openApp(id);
+        div.id = 'app-' + id; // Gán ID để dễ tìm khi kéo thả
+        
+        // Xử lý Touch Event cho long press & drag
+        setupTouchEvents(div, id, index);
+
         const useIcon = data.icon && data.icon.trim() !== "";
         div.innerHTML = `
-            <div class="icon-wrapper">
+            <div class="icon-wrapper" style="position:relative;">
+                <div class="remove-btn" onclick="event.stopPropagation(); removeApp('${id}')">×</div>
                 <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
                 <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
             </div>
             <div class="app-name">${data.Name}</div>
-            
-            <!-- MENU POPUP NHẤN GIỮ (LONG PRESS) -->
-            <div class="long-press-menu" id="menu-${id}">
-                <div class="menu-item" onclick="moveApp('${id}', 'up', ${index})">⬆️ Di chuyển lên</div>
-                <div class="menu-item" onclick="moveApp('${id}', 'down', ${index})">⬇️ Di chuyển xuống</div>
-                <div class="menu-item danger" onclick="removeApp('${id}')">🗑️ Xoá app</div>
-            </div>
         `;
-
-        // Xử lý sự kiện chạm giữ (Long Press)
-        let longPressTimer;
-        div.addEventListener('touchstart', (e) => {
-            longPressTimer = setTimeout(() => {
-                e.preventDefault();
-                showLongPressMenu(id);
-            }, 600);
-        });
-        div.addEventListener('touchend', () => clearTimeout(longPressTimer));
-        div.addEventListener('touchmove', () => clearTimeout(longPressTimer));
         return div;
-    }
-
-    function showLongPressMenu(id) {
-        document.querySelectorAll('.long-press-menu').forEach(el => el.style.display = 'none');
-        const menu = document.getElementById(`menu-${id}`);
-        if(menu) menu.style.display = 'block';
-        setTimeout(() => {
-            document.addEventListener('click', () => {
-                if(menu) menu.style.display = 'none';
-            }, { once: true });
-        }, 100);
     }
 
     function removeApp(id) {
         let current = getSelectedApps();
         current = current.filter(item => item !== id);
         saveSelectedApps(current);
-        renderGrid();
-    }
-
-    function moveApp(id, direction, currentIndex) {
-        let current = getSelectedApps();
-        let newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-        if (newIndex < 0 || newIndex >= current.length) return;
-        
-        // Hoán đổi vị trí
-        [current[currentIndex], current[newIndex]] = [current[newIndex], current[currentIndex]];
-        saveSelectedApps(current);
-        renderGrid();
     }
 
     function renderModal() {
@@ -333,37 +358,28 @@
         modalList.innerHTML = '';
         available.forEach(id => {
             const data = appDatabase[id];
-            const item = createModalItem(id, data);
+            const item = document.createElement('div');
+            item.className = 'modal-item';
+            item.dataset.id = id;
+            item.dataset.name = data.Name.toLowerCase();
+            const useIcon = data.icon && data.icon.trim() !== "";
+            item.innerHTML = `
+                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
+                <span>${data.Name}</span>
+            `;
+            item.onclick = () => {
+                let current = getSelectedApps();
+                if(current.length >= MAX_APPS) { alert(`Bạn chỉ có thể thêm tối đa ${MAX_APPS} ứng dụng.`); return; }
+                current.push(id);
+                saveSelectedApps(current);
+                closeModal();
+            };
             modalList.appendChild(item);
         });
-        document.getElementById('searchBox').value = ''; // Reset search
+        document.getElementById('searchBox').value = '';
     }
 
-    function createModalItem(id, data) {
-        const item = document.createElement('div');
-        item.className = 'modal-item';
-        item.dataset.id = id;
-        item.dataset.name = data.Name.toLowerCase();
-        const useIcon = data.icon && data.icon.trim() !== "";
-        item.innerHTML = `
-            <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
-            <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
-            <span>${data.Name}</span>
-        `;
-        item.onclick = () => {
-            let current = getSelectedApps();
-            if(current.length >= MAX_APPS) {
-                alert(`Bạn chỉ có thể thêm tối đa ${MAX_APPS} ứng dụng.`);
-                return;
-            }
-            current.push(id);
-            saveSelectedApps(current);
-            closeModal();
-        };
-        return item;
-    }
-
-    // Tìm kiếm trong modal
     function filterModalApps(query) {
         const items = modalList.children;
         const q = query.toLowerCase().trim();
@@ -373,8 +389,9 @@
         }
     }
 
-    function closeModal() { modal.classList.remove('active'); }
+    function closeModal() { modal.classList.remove('active'); exitEditMode(); }
     function openApp(bundleId) {
+        if(isEditing) return; // Đang ở chế độ chỉnh sửa thì không cho mở App
         const shortcutName = "Open App Launcher"; 
         window.location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(bundleId);
     }
@@ -384,59 +401,65 @@
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     // ==========================================
-    // 3. 🌐 FOOTER SOCIAL & UTILITY
+    // 3. 🌐 FOOTER SOCIAL & UTILITY (Đã chỉnh lại vị trí & logic)
     // ==========================================
     function renderFooter() {
         const footer = document.getElementById('footerSection');
         footer.innerHTML = '';
 
-        // Icon mạng xã hội
+        // Tạo chỗ chứa các nút
+        const btnWrapper = document.createElement('div');
+        btnWrapper.style.cssText = 'display:flex; align-items:center; gap:12px; justify-content:center; width:100%;';
+
         if(socialData) {
-            const socialIcons = [
-                { key: 'email', icon: 'icon_email.png' }, 
-                { key: 'Follow', icon: 'icon_yt.png' },
-                { key: 'website', icon: 'icon_web.png' }
-            ];
-            socialIcons.forEach(s => {
-                if(socialData[s.key]) {
-                    const link = document.createElement('a');
-                    link.href = socialData[s.key];
-                    link.target = '_blank';
-                    link.className = 'social-icon';
-                    link.innerHTML = `<img src="${s.icon}" onerror="this.outerHTML='📌'" />`;
-                    footer.appendChild(link);
-                }
-            });
-        }
-
-        // NÚT RESET APP LIST
-        const resetBtn = document.createElement('button');
-        resetBtn.className = 'util-btn';
-        resetBtn.innerText = '♻️ Reset App';
-        resetBtn.onclick = () => {
-            if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
-                localStorage.removeItem(STORAGE_KEY);
-                renderGrid();
+            // Nút Email
+            if(socialData.email) {
+                const btn = document.createElement('a');
+                btn.href = socialData.email; // Sếp nhớ sửa social.json thành mailto:...
+                btn.className = 'social-icon';
+                btn.innerHTML = `<img src="icon_email.png" onerror="this.outerHTML='✉️'" />`;
+                btnWrapper.appendChild(btn);
             }
-        };
-        footer.appendChild(resetBtn);
+            // Nút Follow
+            if(socialData.Follow) {
+                const btn = document.createElement('a');
+                btn.href = socialData.Follow;
+                btn.target = '_blank';
+                btn.className = 'social-icon';
+                btn.innerHTML = `<img src="icon_yt.png" onerror="this.outerHTML='🔗'" />`;
+                btnWrapper.appendChild(btn);
+            }
+            // Nút Website (Đổi thành hiển thị Info popup)
+            if(socialData.website) {
+                const btn = document.createElement('button');
+                btn.className = 'social-icon';
+                btn.innerHTML = `<img src="icon_web.png" onerror="this.outerHTML='🌐'" />`;
+                btn.onclick = () => {
+                    alert('📋 App List 2.0 - Sen Hub\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
+                };
+                btnWrapper.appendChild(btn);
+            }
 
-        // NÚT CLEAR SAFARI CACHE (Sếp đổi scheme tại đây nếu cần)
-        const clearSafariBtn = document.createElement('button');
-        clearSafariBtn.className = 'util-btn';
-        clearSafariBtn.innerText = '🧹 Clear Cache';
-        clearSafariBtn.onclick = () => {
-            // Sếp đổi cái link dưới đây thành URL Scheme thật để mở thẳng cài đặt Safari
-            window.location.href = "app-prefs:com.apple.mobilesafari"; 
-        };
-        footer.appendChild(clearSafariBtn);
+            // Nút Reset App (Bỏ chữ, giữ hình. Đang dùng icon reset tạm, sếp up hình sau đổi link icon)
+            const resetBtn = document.createElement('button');
+            resetBtn.className = 'util-btn';
+            // Sếp thay src="reset_icon.png" thành hình reset thật của sếp sau nha
+            resetBtn.innerHTML = `<img src="reset_icon.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
+            resetBtn.onclick = () => {
+                if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
+                    localStorage.removeItem(STORAGE_KEY);
+                    renderGrid();
+                }
+            };
+            btnWrapper.appendChild(resetBtn);
+        }
+        footer.appendChild(btnWrapper);
     }
 
     // ==========================================
-    // 4. 📲 KIỂM TRA TRẠNG THÁI ADD TO HOME SCREEN
+    // 4. 📲 CHECK INSTALL STATUS
     // ==========================================
     function checkInstallStatus() {
-        // Nếu đang chạy dạng tab Safari thường (không phải standalone app) thì hiển thị overlay
         if (!window.navigator.standalone) {
             document.getElementById('installOverlay').style.display = 'flex';
         } else {

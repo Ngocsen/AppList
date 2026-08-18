@@ -234,12 +234,29 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU
+    // 1. 📦 TẢI DỮ LIỆU (ĐÃ THÊM CHỐNG CACHE BẰNG ?t=...)
     // ==========================================
     let appDatabase = {}; let socialData = {};
-    Promise.all([fetch('db.json').then(res => res.json()), fetch('social.json').then(res => res.json())])
-    .then(([db, social]) => { appDatabase = db; socialData = social; renderGrid(); renderDock(); renderModal(); checkInstallStatus(); })
-    .catch(error => { console.error("Lỗi chi tiết:", error); document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu</p>`; });
+    
+    // Bắt buộc tải lại file JSON mới 100%, bỏ qua cache của GitHub Pages
+    const timestamp = Date.now();
+    
+    Promise.all([
+        fetch('db.json?t=' + timestamp).then(res => res.json()),
+        fetch('social.json?t=' + timestamp).then(res => res.json())
+    ])
+    .then(([db, social]) => { 
+        appDatabase = db; 
+        socialData = social; 
+        renderGrid(); 
+        renderDock(); 
+        renderModal(); 
+        checkInstallStatus(); 
+    })
+    .catch(error => { 
+        console.error("Lỗi chi tiết:", error); 
+        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu. Kiểm tra lại file JSON.</p>`; 
+    });
 
     // ==========================================
     // 2. ⚙️ LOGIC CHÍNH

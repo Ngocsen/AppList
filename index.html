@@ -255,7 +255,7 @@
     })
     .catch(error => { 
         console.error("Lỗi chi tiết:", error); 
-        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu. Kiểm tra lại file JSON.</p>`; 
+        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu!<br>Kiểm tra xem file <b>'db.json'</b> hoặc <b>'social.json'</b> có lỗi dấu phẩy/nháy không.</p>`; 
     });
 
     // ==========================================

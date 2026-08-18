@@ -234,11 +234,9 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU (ĐÃ THÊM CHỐNG CACHE BẰNG ?t=...)
+    // 1. 📦 TẢI DỮ LIỆU (VỚI CHỐNG CACHE TUYỆT ĐỐI)
     // ==========================================
     let appDatabase = {}; let socialData = {};
-    
-    // Bắt buộc tải lại file JSON mới 100%, bỏ qua cache của GitHub Pages
     const timestamp = Date.now();
     
     Promise.all([
@@ -311,7 +309,6 @@
         
         const useIcon = data.icon && data.icon.trim() !== "";
 
-        // Thêm phần nội dung HTML có chứa Dấu ba chấm
         div.innerHTML = `
             <div class="icon-wrapper">
                 <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
@@ -323,15 +320,15 @@
             </div>
         `;
 
-        // 1. Sự kiện click vào nút ba chấm (Hiện menu quản lý, không mở app)
+        // Click vào 3 chấm -> Menu
         div.querySelector('.more-btn').onclick = (e) => {
-            e.stopPropagation(); // Ngăn việc click vào ba chấm kích hoạt mở app
+            e.stopPropagation(); 
             showContextMenu(id, e);
         };
 
-        // 2. Sự kiện click vào vùng còn lại (Icon/Tên) -> Mở app
+        // Click vào icon/tên -> Mở app
         div.onclick = (e) => {
-            if(e.target.closest('.more-btn')) return; // Kiểm tra an toàn nếu sót
+            if(e.target.closest('.more-btn')) return; 
             openApp(id);
         };
 
@@ -348,13 +345,12 @@
         document.getElementById('menuMoveDown').onclick = () => { moveApp(id, 'down'); };
         document.getElementById('menuDelete').onclick = () => { removeApp(id); };
 
-        // Định vị trí menu (Lấy tọa độ chuột/chạm)
         let clientX = event.clientX || (event.touches && event.touches[0].clientX);
         let clientY = event.clientY || (event.touches && event.touches[0].clientY);
 
         const menuWidth = 160;
         let leftPos = clientX - (menuWidth / 2);
-        let topPos = clientY - 60; // Nằm ngay phía trên ngón tay/nút bấm
+        let topPos = clientY - 60;
 
         if (leftPos < 20) leftPos = 20;
         if (leftPos + menuWidth > window.innerWidth - 20) leftPos = window.innerWidth - menuWidth - 20;
@@ -445,25 +441,15 @@
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     // ==========================================
-    // 3. 🌐 DOCK SOCIAL & UTILITY (VIÊN THUỐC DƯỚI CÙNG)
+    // 3. 🌐 DOCK SOCIAL & UTILITY (Đã cập nhật theo tên ảnh mới của sếp)
     // ==========================================
     function renderDock() {
         const dock = document.getElementById('dockMenu');
         dock.innerHTML = '';
 
         if(socialData) {
-            const addDockItem = (link, type, icon) => {
-                const el = document.createElement(type);
-                el.className = 'dock-item';
-                if (type === 'a') { el.href = link; el.target = '_blank'; }
-                el.innerHTML = `<img src="${icon}" onerror="this.outerHTML='📌'" style="opacity:0.8;" />`;
-                if (type === 'button') {
-                    el.onclick = link;
-                }
-                return el;
-            };
-
-            // Nút Email
+            
+            // 1. Nút Email
             if(socialData.email) {
                 const btn = document.createElement('a');
                 btn.href = socialData.email;
@@ -471,7 +457,8 @@
                 btn.innerHTML = `<img src="icons/icon_email.png" onerror="this.outerHTML='✉️'" />`;
                 dock.appendChild(btn);
             }
-            // Nút Follow
+
+            // 2. Nút Follow
             if(socialData.Follow) {
                 const btn = document.createElement('a');
                 btn.href = socialData.Follow;
@@ -480,17 +467,19 @@
                 btn.innerHTML = `<img src="icons/icon_sentechtipsvn.png" onerror="this.outerHTML='🔗'" />`;
                 dock.appendChild(btn);
             }
-            // Nút Website
+
+            // 3. Nút Website (Sửa logic: Kiểm tra nếu là "info" thì hiện popup thay vì link)
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'dock-item';
-                btn.innerHTML = `<img src="icons/icon_info.png" onerror="this.outerHTML='🌐'" />`;
+                btn.innerHTML = `<img src="icons/icon_info.png" onerror="this.outerHTML='📌'" />`;
                 btn.onclick = () => {
                     alert('📋 App List 2.0 - Sen Hub\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
                 };
                 dock.appendChild(btn);
             }
-            // Nút Reset
+
+            // 4. Nút Reset
             const resetBtn = document.createElement('button');
             resetBtn.className = 'dock-item';
             resetBtn.innerHTML = `<img src="icons/icon_reset.png" onerror="this.outerHTML='🔄'" />`; 

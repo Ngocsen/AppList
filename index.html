@@ -417,7 +417,7 @@
                 const btn = document.createElement('a');
                 btn.href = socialData.email; // Sếp nhớ sửa social.json thành mailto:...
                 btn.className = 'social-icon';
-                btn.innerHTML = `<img src="icon_email.png" onerror="this.outerHTML='✉️'" />`;
+                btn.innerHTML = `<img src="icons/icon_email.png" onerror="this.outerHTML='✉️'" />`;
                 btnWrapper.appendChild(btn);
             }
             // Nút Follow
@@ -426,16 +426,16 @@
                 btn.href = socialData.Follow;
                 btn.target = '_blank';
                 btn.className = 'social-icon';
-                btn.innerHTML = `<img src="icon_yt.png" onerror="this.outerHTML='🔗'" />`;
+                btn.innerHTML = `<img src="icons/icon_yt.png" onerror="this.outerHTML='🔗'" />`;
                 btnWrapper.appendChild(btn);
             }
             // Nút Website (Đổi thành hiển thị Info popup)
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'social-icon';
-                btn.innerHTML = `<img src="icon_web.png" onerror="this.outerHTML='🌐'" />`;
+                btn.innerHTML = `<img src="icons/icon_web.png" onerror="this.outerHTML='🌐'" />`;
                 btn.onclick = () => {
-                    alert('📋 App List 2.0 - Sen Hub\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
+                    alert('📋 App List 2.0\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
                 };
                 btnWrapper.appendChild(btn);
             }
@@ -444,7 +444,7 @@
             const resetBtn = document.createElement('button');
             resetBtn.className = 'util-btn';
             // Sếp thay src="reset_icon.png" thành hình reset thật của sếp sau nha
-            resetBtn.innerHTML = `<img src="reset_icon.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
+            resetBtn.innerHTML = `<img src="icons/reset_icon.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
                     localStorage.removeItem(STORAGE_KEY);

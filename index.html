@@ -210,9 +210,11 @@
         renderFooter();
         renderModal();
         checkInstallStatus(); // Kiểm tra xem đã thêm vào màn hình chính chưa
-    }).catch(error => {
-        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px;">Lỗi tải dữ liệu.</p>`;
-    });
+      .catch(error => {
+            console.error("Lỗi chi tiết:", error);
+            // Hiện lỗi cụ thể ra màn hình
+            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải JSON: <br> ${error.message}</p>`;
+        });
 
     // ==========================================
     // 2. ⚙️ LOGIC CHÍNH

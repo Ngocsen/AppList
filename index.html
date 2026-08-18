@@ -7,14 +7,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="App List" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-    <title>App List</title>
+    <title>Sen Hub</title>
     
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            /* Hiệu ứng nền chuyển động kiểu Neon/Siri */
             background: linear-gradient(135deg, #d4bbfc, #8ec5fc, #a78bfa, #7dd3fc);
             background-size: 300% 300%;
             animation: gradientShift 8s ease infinite;
@@ -22,17 +20,14 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            /* Dâng khung lên gần trên cùng */
             padding: 40px 20px; 
+            position: relative;
         }
-
-        /* Keyframes tạo hiệu ứng chuyển động giống Siri */
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
         .app-container {
             width: 100%;
             max-width: 420px;
@@ -40,189 +35,159 @@
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
             border-radius: 40px;
-            padding: 24px 20px 32px;
-            /* Tạo hiệu ứng phát sáng neon mờ nổi khung lên */
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 
-                        0 0 40px rgba(139, 92, 246, 0.15),
-                        inset 0 0 20px rgba(255, 255, 255, 0.4);
+            padding: 24px 20px 20px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08), 0 0 40px rgba(139, 92, 246, 0.15);
             border: 1px solid rgba(255, 255, 255, 0.6);
-            transition: box-shadow 0.3s ease, background 0.3s ease, border 0.3s ease;
         }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding: 0 4px;
-        }
-        .header h1 {
-            font-size: 26px;
-            font-weight: 700;
-            color: #1e1e2f;
-            letter-spacing: -0.5px;
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .header h1 { font-size: 26px; font-weight: 700; color: #1e1e2f; }
         .pill-btn {
             background: linear-gradient(135deg, #6366f1, #8b5cf6);
-            border: none;
-            border-radius: 50px;
-            padding: 10px 20px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            border: none; border-radius: 50px; padding: 10px 20px; color: white; font-weight: 600; font-size: 14px;
+            cursor: pointer; box-shadow: 0 8px 16px rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.2); display: flex; align-items: center; gap: 6px;
         }
         .pill-btn:active { transform: scale(0.96); }
         
-        /* --- CHỈNH LẠI GRID: 4 CỘT MẶC ĐỊNH --- */
-        .app-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px 10px;
-            justify-items: center;
-        }
-        
-        .app-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            width: 100%;
-            transition: transform 0.1s;
-        }
+        .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px 10px; justify-items: center; }
+        @media (min-width: 640px) { .app-grid { grid-template-columns: repeat(5, 1fr); } }
+        @media (min-width: 900px) { .app-grid { grid-template-columns: repeat(6, 1fr); } }
+
+        .app-item { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
         .app-item:active { transform: scale(0.9); }
         
-        .icon-wrapper {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: #ffffff; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            margin-bottom: 8px;
-            position: relative;
-            border: 1px solid rgba(255,255,255,0.8);
-            overflow: hidden; 
-        }
-        .icon-wrapper img { 
-            width: 100%;      
-            height: 100%;      
-            object-fit: contain; 
-            border-radius: 16px; 
-        }
+        .icon-wrapper { width: 60px; height: 60px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); }
+        .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .add-btn {
-            background: rgba(255, 255, 255, 0.25);
-            border: 2px dashed rgba(255, 255, 255, 0.6);
-            color: #4f46e5;
-            font-size: 28px;
-            font-weight: 300;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
+            background: rgba(255, 255, 255, 0.25); border: 2px dashed rgba(255, 255, 255, 0.6);
+            color: #4f46e5; font-size: 28px; cursor: pointer; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 60px; height: 60px; transition: all 0.2s;
         }
         .add-btn:active { background: rgba(255, 255, 255, 0.4); transform: scale(0.9); }
-        .add-btn .app-name { margin-top: 6px; font-weight: 600; color: #4f46e5; }
-        
-        /* MODAL */
+        .add-btn .app-name { margin-top: 6px; font-weight: 600; color: #4f46e5; font-size: 11px;}
+        .hide-add { display: none !important; }
+
+        /* MODAL THÊM APP */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 1000;
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
             display: flex; align-items: center; justify-content: center;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
         .modal-content {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            width: 85%; max-width: 380px;
-            max-height: 70vh;
-            border-radius: 28px;
-            padding: 20px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
-            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(30px);
+            width: 85%; max-width: 380px; max-height: 70vh; border-radius: 28px;
+            padding: 20px; box-shadow: 0 30px 60px rgba(0,0,0,0.15); overflow-y: auto;
         }
         .modal-content h3 { font-size: 18px; text-align: center; margin-bottom: 12px; color: #1e1e2f; }
-        .modal-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .modal-item {
-            display: flex; flex-direction: column; align-items: center;
-            background: rgba(255,255,255,0.5); padding: 10px; border-radius: 16px;
-            cursor: pointer; transition: 0.2s; border: 1px solid transparent;
+        .search-box {
+            width: 100%; padding: 10px 14px; border-radius: 50px; border: none;
+            background: rgba(255,255,255,0.5); margin-bottom: 12px; font-size: 14px; outline: none;
         }
+        .modal-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        .modal-item { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 16px; cursor: pointer; border: 1px solid transparent; }
         .modal-item:active { background: rgba(255,255,255,0.9); border-color: #4f46e5; transform: scale(0.95); }
-        .modal-item img { width: 40px; height: 40px; margin-bottom: 4px; object-fit: contain; }
-        .modal-item .fallback-text { font-size: 18px; font-weight: 600; display: none; }
+        .modal-item img { width: 40px; height: 40px; object-fit: contain; }
         .modal-item span { font-size: 10px; text-align: center; color: #333; }
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
-        /* --- RESPONSIVE CHO IPAD & MÀN TO --- */
-        @media (min-width: 640px) { 
-            .app-grid { grid-template-columns: repeat(5, 1fr); gap: 16px; } /* Màn iPad Mini, hiện 5 cột */
+        /* FOOTER SOCIAL & UTILITY */
+        .footer-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; gap: 16px; flex-wrap: wrap; }
+        .social-icon { width: 24px; height: 24px; opacity: 0.7; cursor: pointer; transition: 0.2s; border-radius: 6px; background: transparent; border: none; padding: 0; }
+        .social-icon:active { transform: scale(0.85); opacity: 1; }
+        .social-icon img { width: 100%; height: 100%; object-fit: contain; }
+        
+        .util-btn {
+            font-size: 10px; padding: 4px 8px; background: rgba(255,255,255,0.3); border-radius: 12px;
+            color: #1e1e2f; opacity: 0.7; border: 1px solid rgba(255,255,255,0.2); cursor: pointer;
         }
-        @media (min-width: 900px) { 
-            .app-grid { grid-template-columns: repeat(6, 1fr); gap: 20px; } /* Màn iPad Pro, hiện 6 cột */
-        }
+        .util-btn:active { opacity: 1; background: rgba(255,255,255,0.6); }
 
-        /* --- TỰ ĐỘNG NHẬN CHẾ ĐỘ SÁNG/TỐI (Dark Mode) --- */
+        /* LONG PRESS MENU */
+        .long-press-menu {
+            position: absolute; top: -10px; right: -10px;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            border-radius: 16px; padding: 12px 0; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            display: none; z-index: 50; width: 140px;
+        }
+        .menu-item { padding: 8px 16px; font-size: 14px; color: #1e1e2f; cursor: pointer; text-align: left; }
+        .menu-item:active { background: rgba(0,0,0,0.05); }
+        .menu-item.danger { color: #ff3b30; }
+
+        /* INSTALL OVERLAY (Add to Home Screen) */
+        .install-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(20px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .install-card {
+            background: white; border-radius: 32px; padding: 30px; width: 85%; max-width: 380px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.1); text-align: center;
+        }
+        .install-card h2 { font-size: 22px; margin-bottom: 10px; color: #1e1e2f; }
+        .install-card p { font-size: 14px; color: #555; margin-bottom: 20px; }
+        .mock-safari { background: #f0f0f0; border-radius: 20px; padding: 30px 10px 10px; display: inline-block; margin-bottom: 20px; position: relative;}
+        .mock-share { width: 44px; height: 44px; background: #007aff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: 0 auto; font-size: 20px;}
+        .install-btn { padding: 10px 30px; background: #007aff; color: white; border: none; border-radius: 50px; font-weight: 600; }
+
+        /* DARK MODE */
         @media (prefers-color-scheme: dark) {
-            body {
-                background: linear-gradient(135deg, #1e1b4b, #0f172a, #2e1065, #1e3a8a);
-                background-size: 300% 300%;
-            }
-            .app-container {
-                background: rgba(30, 27, 75, 0.3); 
-                border: 1px solid rgba(255, 255, 255, 0.05);
-                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 
-                            0 0 40px rgba(99, 102, 241, 0.2);
-            }
-            .header h1 { color: #f1f5f9; }
-            .app-name { color: #cbd5e1; }
+            body { background: linear-gradient(135deg, #1e1b4b, #0f172a, #2e1065, #1e3a8a); background-size: 300% 300%; }
+            .app-container { background: rgba(30, 27, 75, 0.3); border: 1px solid rgba(255,255,255,0.05); }
+            .header h1, .app-name { color: #f1f5f9; }
             .modal-content { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); }
-            .modal-content h3 { color: #f1f5f9; }
-            .modal-item { background: rgba(255,255,255,0.05); color: #f1f5f9; border: 1px solid rgba(255,255,255,0.05); }
-            .modal-item span { color: #cbd5e1; }
+            .modal-content h3, .modal-item span { color: #f1f5f9; }
+            .modal-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); }
+            .long-press-menu { background: rgba(30, 27, 75, 0.85); color: #f1f5f9; }
+            .menu-item { color: #f1f5f9; }
+            .menu-item.danger { color: #ff6b5a; }
+            .install-card { background: rgba(30, 27, 75, 0.95); }
+            .install-card h2 { color: #f1f5f9; }
+            .install-card p { color: #94a3b8; }
         }
     </style>
 </head>
 <body>
 
+<!-- HƯỚNG DẪN ADD TO HOME SCREEN -->
+<div class="install-overlay" id="installOverlay">
+    <div class="install-card">
+        <h2>📲 Thêm vào Màn hình chính</h2>
+        <p>Để sử dụng App List tiện lợi nhất, bạn hãy thêm trang web này vào Màn hình chính.</p>
+        <div class="mock-safari">
+            <div class="mock-share">↑</div>
+        </div>
+        <p><b>Bước 1:</b> Nhấn vào nút Chia sẻ (hình vuông mũi tên lên) ở thanh công cụ dưới cùng.</p>
+        <p><b>Bước 2:</b> Chọn <b>"Thêm vào Màn hình chính"</b>.</p>
+        <button class="install-btn" onclick="document.getElementById('installOverlay').style.display='none'">Đã hiểu</button>
+    </div>
+</div>
+
 <div class="app-container">
     <div class="header">
-        <h1>App List</h1>
+        <h1>Sen Hub</h1>
         <button class="pill-btn" id="getPluginBtn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
             Get Plugin
         </button>
     </div>
     <div class="app-grid" id="appGrid"></div>
+
+    <!-- FOOTER SOCIAL & UTILITY -->
+    <div class="footer-section" id="footerSection">
+        <!-- JS sẽ render icon social, reset, và clear safari vào đây -->
+    </div>
 </div>
 
-<!-- Modal Danh sách App để thêm -->
+<!-- MODAL ADD APP -->
 <div class="modal-overlay" id="addAppModal">
     <div class="modal-content">
         <h3>➕ Add App</h3>
+        <input type="text" class="search-box" id="searchBox" placeholder="Tìm kiếm ứng dụng..." oninput="filterModalApps(this.value)" />
         <div class="modal-list" id="modalList"></div>
         <button class="close-modal" onclick="closeModal()">Close</button>
     </div>
@@ -230,34 +195,39 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU TỪ FILE bd.json BÊN NGOÀI
+    // 1. 📦 TẢI DỮ LIỆU (DB & SOCIAL)
     // ==========================================
     let appDatabase = {}; 
-    const dbUrl = "bd.json"; 
+    let socialData = {};
 
-    fetch(dbUrl)
-        .then(response => response.json())
-        .then(data => {
-            appDatabase = data; 
-            renderGrid();       
-            renderModal();      
-        })
-        .catch(error => {
-            console.error("Lỗi tải db:", error);
-            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">Lỗi tải dữ liệu. Vui lòng thử lại sau khi xóa cache Safari.</p>`;
-        });
+    Promise.all([
+        fetch('db.json').then(res => res.json()),
+        fetch('social.json').then(res => res.json())
+    ]).then(([db, social]) => {
+        appDatabase = db; 
+        socialData = social;
+        renderGrid();
+        renderFooter();
+        renderModal();
+        checkInstallStatus(); // Kiểm tra xem đã thêm vào màn hình chính chưa
+    }).catch(error => {
+        document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px;">Lỗi tải dữ liệu.</p>`;
+    });
 
     // ==========================================
-    // 2. ⚙️ LOGIC HIỂN THỊ VÀ MỞ APP
+    // 2. ⚙️ LOGIC CHÍNH
     // ==========================================
     const STORAGE_KEY = 'myAppList';
+    const MAX_APPS = 16;
     const grid = document.getElementById('appGrid');
     const modal = document.getElementById('addAppModal');
     const modalList = document.getElementById('modalList');
 
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) return JSON.parse(stored);
+        if (stored) {
+            try { return JSON.parse(stored); } catch(e) {}
+        }
         return ["com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
@@ -270,20 +240,27 @@
         if(Object.keys(appDatabase).length === 0) return; 
         const ids = getSelectedApps();
         grid.innerHTML = '';
-        ids.forEach(id => {
+        ids.forEach((id, index) => {
             const data = appDatabase[id];
             if(!data) return;
-            const item = createAppItem(id, data);
+            const item = createAppItem(id, data, index);
             grid.appendChild(item);
         });
-        const addBtn = document.createElement('div');
-        addBtn.className = 'app-item add-btn';
-        addBtn.innerHTML = `<span style="font-size:32px; color:#4f46e5;">+</span><div class="app-name">Thêm</div>`;
-        addBtn.onclick = () => modal.classList.add('active');
-        grid.appendChild(addBtn);
+
+        // Hiện/Ẩn nút + dựa trên giới hạn 16
+        if (ids.length < MAX_APPS) {
+            const addBtn = document.createElement('div');
+            addBtn.className = 'app-item add-btn';
+            addBtn.id = 'addBtn';
+            addBtn.innerHTML = `<span style="font-size:28px; color:#4f46e5; line-height: 1;">+</span><div class="app-name" style="margin-top:0px;">Thêm</div>`;
+            addBtn.onclick = () => { renderModal(); modal.classList.add('active'); };
+            grid.appendChild(addBtn);
+        } else {
+            document.getElementById('addBtn')?.remove();
+        }
     }
 
-    function createAppItem(id, data) {
+    function createAppItem(id, data, index) {
         const div = document.createElement('div');
         div.className = 'app-item';
         div.onclick = () => openApp(id);
@@ -294,33 +271,102 @@
                 <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
             </div>
             <div class="app-name">${data.Name}</div>
+            
+            <!-- MENU POPUP NHẤN GIỮ (LONG PRESS) -->
+            <div class="long-press-menu" id="menu-${id}">
+                <div class="menu-item" onclick="moveApp('${id}', 'up', ${index})">⬆️ Di chuyển lên</div>
+                <div class="menu-item" onclick="moveApp('${id}', 'down', ${index})">⬇️ Di chuyển xuống</div>
+                <div class="menu-item danger" onclick="removeApp('${id}')">🗑️ Xoá app</div>
+            </div>
         `;
+
+        // Xử lý sự kiện chạm giữ (Long Press)
+        let longPressTimer;
+        div.addEventListener('touchstart', (e) => {
+            longPressTimer = setTimeout(() => {
+                e.preventDefault();
+                showLongPressMenu(id);
+            }, 600);
+        });
+        div.addEventListener('touchend', () => clearTimeout(longPressTimer));
+        div.addEventListener('touchmove', () => clearTimeout(longPressTimer));
         return div;
+    }
+
+    function showLongPressMenu(id) {
+        document.querySelectorAll('.long-press-menu').forEach(el => el.style.display = 'none');
+        const menu = document.getElementById(`menu-${id}`);
+        if(menu) menu.style.display = 'block';
+        setTimeout(() => {
+            document.addEventListener('click', () => {
+                if(menu) menu.style.display = 'none';
+            }, { once: true });
+        }, 100);
+    }
+
+    function removeApp(id) {
+        let current = getSelectedApps();
+        current = current.filter(item => item !== id);
+        saveSelectedApps(current);
+        renderGrid();
+    }
+
+    function moveApp(id, direction, currentIndex) {
+        let current = getSelectedApps();
+        let newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        if (newIndex < 0 || newIndex >= current.length) return;
+        
+        // Hoán đổi vị trí
+        [current[currentIndex], current[newIndex]] = [current[newIndex], current[currentIndex]];
+        saveSelectedApps(current);
+        renderGrid();
     }
 
     function renderModal() {
         if(Object.keys(appDatabase).length === 0) return;
+        const selectedIds = getSelectedApps();
+        const available = Object.keys(appDatabase).filter(id => !selectedIds.includes(id));
         modalList.innerHTML = '';
-        Object.keys(appDatabase).forEach(id => {
+        available.forEach(id => {
             const data = appDatabase[id];
-            const selectedIds = getSelectedApps();
-            if(selectedIds.includes(id)) return;
-            const item = document.createElement('div');
-            item.className = 'modal-item';
-            const useIcon = data.icon && data.icon.trim() !== "";
-            item.innerHTML = `
-                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
-                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
-                <span>${data.Name}</span>
-            `;
-            item.onclick = () => {
-                let current = getSelectedApps();
-                current.push(id);
-                saveSelectedApps(current);
-                closeModal();
-            };
+            const item = createModalItem(id, data);
             modalList.appendChild(item);
         });
+        document.getElementById('searchBox').value = ''; // Reset search
+    }
+
+    function createModalItem(id, data) {
+        const item = document.createElement('div');
+        item.className = 'modal-item';
+        item.dataset.id = id;
+        item.dataset.name = data.Name.toLowerCase();
+        const useIcon = data.icon && data.icon.trim() !== "";
+        item.innerHTML = `
+            <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+            <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
+            <span>${data.Name}</span>
+        `;
+        item.onclick = () => {
+            let current = getSelectedApps();
+            if(current.length >= MAX_APPS) {
+                alert(`Bạn chỉ có thể thêm tối đa ${MAX_APPS} ứng dụng.`);
+                return;
+            }
+            current.push(id);
+            saveSelectedApps(current);
+            closeModal();
+        };
+        return item;
+    }
+
+    // Tìm kiếm trong modal
+    function filterModalApps(query) {
+        const items = modalList.children;
+        const q = query.toLowerCase().trim();
+        for (let i = 0; i < items.length; i++) {
+            const name = items[i].dataset.name || '';
+            items[i].style.display = name.includes(q) || q === '' ? 'flex' : 'none';
+        }
     }
 
     function closeModal() { modal.classList.remove('active'); }
@@ -328,11 +374,71 @@
         const shortcutName = "Open App Launcher"; 
         window.location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(bundleId);
     }
-    
     document.getElementById('getPluginBtn').onclick = () => {
         window.open("https://www.icloud.com/shortcuts/bb6320058d1c46639372d41628ea2432", '_blank');
     };
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+    // ==========================================
+    // 3. 🌐 FOOTER SOCIAL & UTILITY
+    // ==========================================
+    function renderFooter() {
+        const footer = document.getElementById('footerSection');
+        footer.innerHTML = '';
+
+        // Icon mạng xã hội
+        if(socialData) {
+            const socialIcons = [
+                { key: 'email', icon: 'icon_email.png' }, // Sếp cần có file ảnh này
+                { key: 'youtube', icon: 'icon_yt.png' },
+                { key: 'website', icon: 'icon_web.png' }
+            ];
+            socialIcons.forEach(s => {
+                if(socialData[s.key]) {
+                    const link = document.createElement('a');
+                    link.href = socialData[s.key];
+                    link.target = '_blank';
+                    link.className = 'social-icon';
+                    link.innerHTML = `<img src="${s.icon}" onerror="this.outerHTML='📌'" />`;
+                    footer.appendChild(link);
+                }
+            });
+        }
+
+        // NÚT RESET APP LIST
+        const resetBtn = document.createElement('button');
+        resetBtn.className = 'util-btn';
+        resetBtn.innerText = '♻️ Reset App';
+        resetBtn.onclick = () => {
+            if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
+                localStorage.removeItem(STORAGE_KEY);
+                renderGrid();
+            }
+        };
+        footer.appendChild(resetBtn);
+
+        // NÚT CLEAR SAFARI CACHE (CHỪA CHỖ CHO SẾP NHÚNG SCHEME)
+        const clearSafariBtn = document.createElement('button');
+        clearSafariBtn.className = 'util-btn';
+        clearSafariBtn.innerText = '🧹 Clear Cache';
+        clearSafariBtn.onclick = () => {
+            // Sếp đổi cái link dưới đây thành URL Scheme thật để mở thẳng cài đặt Safari
+            window.location.href = "prefs:root=SAFARI"; 
+        };
+        footer.appendChild(clearSafariBtn);
+    }
+
+    // ==========================================
+    // 4. 📲 KIỂM TRA TRẠNG THÁI ADD TO HOME SCREEN
+    // ==========================================
+    function checkInstallStatus() {
+        // Nếu đang chạy dạng tab Safari thường (không phải standalone app) thì hiển thị overlay
+        if (!window.navigator.standalone) {
+            document.getElementById('installOverlay').style.display = 'flex';
+        } else {
+            document.getElementById('installOverlay').style.display = 'none';
+        }
+    }
 </script>
 </body>
 </html>

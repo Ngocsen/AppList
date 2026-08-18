@@ -55,30 +55,10 @@
         @media (min-width: 900px) { .app-grid { grid-template-columns: repeat(6, 1fr); } }
 
         .app-item { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
-        .app-item.active-drag { transform: scale(0.95); opacity: 0.8; z-index: 10; }
-        
-        .icon-wrapper { width: 60px; height: 60px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); transition: transform 0.2s; }
+        .icon-wrapper { width: 60px; height: 60px; border-radius: 16px; background: #ffffff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.8); }
         .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
         .app-name { font-size: 11px; color: #1e1e2f; text-align: center; font-weight: 500; opacity: 0.8; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        
-        /* --- HIỆU ỨNG RUNG RINH & DẤU X KHI CHỈNH SỬA --- */
-        .edit-mode .app-item .icon-wrapper {
-            animation: shake 0.15s infinite alternate;
-        }
-        @keyframes shake {
-            0% { transform: rotate(-4deg); }
-            100% { transform: rotate(4deg); }
-        }
-        .remove-btn {
-            position: absolute; top: -8px; left: -8px;
-            width: 24px; height: 24px; background: #ff3b30; color: white;
-            border-radius: 50%; border: 2px solid white; font-size: 14px; font-weight: bold;
-            display: none; align-items: center; justify-content: center;
-            cursor: pointer; z-index: 20; box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        }
-        .edit-mode .app-item .remove-btn { display: flex; }
-        .remove-btn:active { transform: scale(0.8); }
 
         .add-btn {
             background: rgba(255, 255, 255, 0.25); border: 2px dashed rgba(255, 255, 255, 0.6);
@@ -114,13 +94,11 @@
         .modal-item span { font-size: 10px; text-align: center; color: #333; }
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
-        /* FOOTER SOCIAL & UTILITY (CĂN GIỮA, BỎ NÚT CLEAR) */
+        /* FOOTER SOCIAL & UTILITY */
         .footer-section { margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.2); display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; }
-        
         .social-icon { width: 28px; height: 28px; opacity: 0.7; cursor: pointer; transition: 0.2s; border-radius: 8px; background: transparent; border: none; padding: 0; display: flex; align-items: center; justify-content: center;}
         .social-icon:active { transform: scale(0.85); opacity: 1; }
         .social-icon img { width: 80%; height: 80%; object-fit: contain; }
-        
         .util-btn {
             width: 28px; height: 28px; background: rgba(255,255,255,0.2); border-radius: 8px;
             color: #1e1e2f; opacity: 0.7; border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
@@ -142,6 +120,48 @@
         .mock-share { width: 44px; height: 44px; background: #007aff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; margin: 0 auto; font-size: 20px;}
         .install-btn { padding: 10px 30px; background: #007aff; color: white; border: none; border-radius: 50px; font-weight: 600; }
 
+        /* ======================================================== */
+        /*  POPUP MENU MỚI KIỂU APPLE (SAO CHÉP/CHỌN TẤT CẢ)       */
+        /* ======================================================== */
+        .context-menu {
+            position: fixed; z-index: 9999;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border-radius: 14px;
+            padding: 8px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            min-width: 150px;
+            display: none;
+            flex-direction: column;
+            transform: scale(0.95);
+            opacity: 0;
+            transition: transform 0.15s cubic-bezier(0.3, 0.1, 0.3, 1), opacity 0.15s cubic-bezier(0.3, 0.1, 0.3, 1);
+            transform-origin: top center;
+            pointer-events: none;
+        }
+        .context-menu.active {
+            display: flex;
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .context-menu .menu-item {
+            padding: 10px 16px;
+            font-size: 15px;
+            color: #1c1c1e;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+        }
+        .context-menu .menu-item:active {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        .context-menu .menu-item.delete {
+            color: #ff3b30; /* Màu đỏ */
+        }
+
         /* DARK MODE */
         @media (prefers-color-scheme: dark) {
             body { background: linear-gradient(135deg, #1e1b4b, #0f172a, #2e1065, #1e3a8a); background-size: 300% 300%; }
@@ -154,6 +174,21 @@
             .install-card h2 { color: #f1f5f9; }
             .install-card p { color: #94a3b8; }
             .util-btn { background: rgba(255,255,255,0.1); color: #f1f5f9; }
+            
+            /* DARK MODE CHO POPUP */
+            .context-menu {
+                background: rgba(30, 27, 75, 0.85);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .context-menu .menu-item {
+                color: #f1f5f9;
+            }
+            .context-menu .menu-item:active {
+                background: rgba(255, 255, 255, 0.1);
+            }
+            .context-menu .menu-item.delete {
+                color: #ff6b5a;
+            }
         }
     </style>
 </head>
@@ -183,8 +218,15 @@
     </div>
     <div class="app-grid" id="appGrid"></div>
 
-    <!-- FOOTER SOCIAL & UTILITY (Căn giữa) -->
+    <!-- FOOTER SOCIAL & UTILITY -->
     <div class="footer-section" id="footerSection"></div>
+</div>
+
+<!-- POPUP MENU APPLE STYLE (Ẩn mặc định) -->
+<div class="context-menu" id="contextMenu">
+    <div class="menu-item" id="menuMoveUp">Chuyển lên</div>
+    <div class="menu-item" id="menuMoveDown">Chuyển xuống</div>
+    <div class="menu-item delete" id="menuDelete">Xoá</div>
 </div>
 
 <!-- MODAL ADD APP -->
@@ -215,12 +257,9 @@
     const modal = document.getElementById('addAppModal');
     const modalList = document.getElementById('modalList');
 
-    // State cho chế độ chỉnh sửa (Rung rinh & Dấu X)
-    let isEditing = false;
-    let editTimer = null;
-    let touchStartY = 0, touchStartX = 0;
-    let isDragging = false;
-    let draggedId = null;
+    // State cho Menu Popup
+    let currentSelectedAppId = null;
+    let isMenuOpen = false;
 
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -231,6 +270,7 @@
     function saveSelectedApps(ids) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
         renderGrid();
+        closeContextMenu(); // Đóng menu sau khi thay đổi
     }
 
     function renderGrid() {
@@ -248,95 +288,65 @@
             addBtn.className = 'app-item add-btn';
             addBtn.id = 'addBtn';
             addBtn.innerHTML = `<span style="font-size:28px; color:#4f46e5; line-height: 1;">+</span><div class="app-name" style="margin-top:0px;">Thêm</div>`;
-            addBtn.onclick = () => { renderModal(); modal.classList.add('active'); };
+            addBtn.onclick = () => { renderModal(); modal.classList.add('active'); closeContextMenu(); };
             grid.appendChild(addBtn);
         } else {
             document.getElementById('addBtn')?.remove();
         }
-        // Thoát chế độ chỉnh sửa sau khi render lại (để tránh rung rinh khi vừa sửa xong)
-        exitEditMode();
     }
 
-    // --- XỬ LÝ EVENT CHẠM GIỮ & KÉO THẢ ---
+    // --- XỬ LÝ CHẠM, CLICK VÀ LONG PRESS ---
     function setupTouchEvents(div, id, index) {
-        let timer;
+        let longPressTimer;
+        let isDragging = false;
+        let touchStartX, touchStartY;
+
         div.addEventListener('touchstart', (e) => {
-            if(e.target.closest('.remove-btn')) return; // Không kích hoạt khi bấm vào nút X
+            if(isMenuOpen && currentSelectedAppId !== id) { closeContextMenu(); }
+            
             isDragging = false;
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
-            timer = setTimeout(() => {
+
+            longPressTimer = setTimeout(() => {
                 if(!isDragging) {
-                    e.preventDefault(); // Ngăn Safari hiện menu share
-                    enterEditMode(id);
+                    e.preventDefault(); // Ngăn Safari hiện menu share khi nhấn giữ
+                    showContextMenu(id, touchStartX, touchStartY);
+                    isMenuOpen = true;
                 }
             }, 500);
         }, { passive: false });
 
         div.addEventListener('touchmove', (e) => {
-            if(isEditing) {
-                e.preventDefault(); // Ngăn cuộn trang khi đang drag
-                const touch = e.touches[0];
-                const dx = touch.clientX - touchStartX;
-                const dy = touch.clientY - touchStartY;
-                
-                if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
-                    isDragging = true;
-                    clearTimeout(timer);
-                    
-                    // Logic xác định vị trí thả (xác định phần tử đang nằm dưới ngón tay)
-                    const elements = document.elementsFromPoint(touch.clientX, touch.clientY);
-                    const targetItem = elements.find(el => el.classList.contains('app-item') && el.id !== div.id);
-                    if(targetItem && targetItem.id) {
-                        moveAppToPos(id, targetItem.id);
-                    }
-                }
+            const touch = e.touches[0];
+            const dx = touch.clientX - touchStartX;
+            const dy = touch.clientY - touchStartY;
+            if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                isDragging = true;
+                clearTimeout(longPressTimer);
             }
-        }, { passive: false });
+        }, { passive: true });
 
         div.addEventListener('touchend', (e) => {
-            clearTimeout(timer);
-            if(isEditing && !isDragging) {
-                // Nếu chạm 1 lần khi đang edit -> Không làm gì cả
+            clearTimeout(longPressTimer);
+            // Nếu là cú chạm nhanh (không kéo, không giữ lâu để hiện menu) => Mở App
+            if (!isDragging && !isMenuOpen) {
+                openApp(id);
             }
-        });
-    }
-
-    function enterEditMode(id) {
-        isEditing = true;
-        grid.classList.add('edit-mode');
-    }
-
-    function exitEditMode() {
-        isEditing = false;
-        isDragging = false;
-        grid.classList.remove('edit-mode');
-    }
-
-    function moveAppToPos(dragId, targetId) {
-        let current = getSelectedApps();
-        const dragIndex = current.indexOf(dragId);
-        const targetIndex = current.indexOf(targetId);
-        if (dragIndex === -1 || targetIndex === -1 || dragIndex === targetIndex) return;
-        
-        // Di chuyển phần tử tới vị trí mới
-        current.splice(dragIndex, 1);
-        current.splice(targetIndex, 0, dragId);
-        saveSelectedApps(current);
+            isDragging = false;
+        }, { passive: true });
     }
 
     function createAppItem(id, data, index) {
         const div = document.createElement('div');
         div.className = 'app-item';
-        div.id = 'app-' + id; // Gán ID để dễ tìm khi kéo thả
+        div.id = 'app-' + id; 
         
-        // Xử lý Touch Event cho long press & drag
         setupTouchEvents(div, id, index);
 
         const useIcon = data.icon && data.icon.trim() !== "";
         div.innerHTML = `
-            <div class="icon-wrapper" style="position:relative;">
-                <div class="remove-btn" onclick="event.stopPropagation(); removeApp('${id}')">×</div>
+            <div class="icon-wrapper">
                 <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
                 <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
             </div>
@@ -345,12 +355,64 @@
         return div;
     }
 
+    // --- POPUP MENU LOGIC ---
+    function showContextMenu(id, x, y) {
+        const menu = document.getElementById('contextMenu');
+        currentSelectedAppId = id;
+        
+        // Gán sự kiện cho các nút
+        document.getElementById('menuMoveUp').onclick = () => moveApp(id, 'up');
+        document.getElementById('menuMoveDown').onclick = () => moveApp(id, 'down');
+        document.getElementById('menuDelete').onclick = () => removeApp(id);
+
+        // Định vị trí menu (căn giữa so với điểm chạm và hơi nhô lên trên)
+        const menuWidth = 160;
+        let leftPos = x - (menuWidth / 2);
+        let topPos = y - 60; // Nằm ngay phía trên ngón tay
+
+        // Giới hạn không để menu tràn viền
+        if (leftPos < 20) leftPos = 20;
+        if (leftPos + menuWidth > window.innerWidth - 20) leftPos = window.innerWidth - menuWidth - 20;
+        if (topPos < 20) topPos = 20;
+
+        menu.style.left = leftPos + 'px';
+        menu.style.top = topPos + 'px';
+        menu.classList.add('active');
+        isMenuOpen = true;
+    }
+
+    function closeContextMenu() {
+        const menu = document.getElementById('contextMenu');
+        menu.classList.remove('active');
+        isMenuOpen = false;
+        currentSelectedAppId = null;
+    }
+
+    // Đóng menu nếu bấm ra ngoài
+    document.addEventListener('touchstart', (e) => {
+        if (isMenuOpen && !e.target.closest('.context-menu') && !e.target.closest('.app-item')) {
+            closeContextMenu();
+        }
+    }, { passive: true });
+
     function removeApp(id) {
         let current = getSelectedApps();
         current = current.filter(item => item !== id);
         saveSelectedApps(current);
     }
 
+    function moveApp(id, direction) {
+        let current = getSelectedApps();
+        const currentIndex = current.indexOf(id);
+        let newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+        if (newIndex < 0 || newIndex >= current.length) return;
+        
+        // Hoán đổi vị trí
+        [current[currentIndex], current[newIndex]] = [current[newIndex], current[currentIndex]];
+        saveSelectedApps(current);
+    }
+
+    // --- MODAL LOGIC ---
     function renderModal() {
         if(Object.keys(appDatabase).length === 0) return;
         const selectedIds = getSelectedApps();
@@ -389,38 +451,35 @@
         }
     }
 
-    function closeModal() { modal.classList.remove('active'); exitEditMode(); }
+    function closeModal() { modal.classList.remove('active'); }
+    
     function openApp(bundleId) {
-        if(isEditing) return; // Đang ở chế độ chỉnh sửa thì không cho mở App
         const shortcutName = "Open App Launcher"; 
         window.location.href = "shortcuts://run-shortcut?name=" + encodeURIComponent(shortcutName) + "&input=text&text=" + encodeURIComponent(bundleId);
     }
+
     document.getElementById('getPluginBtn').onclick = () => {
         window.open("https://www.icloud.com/shortcuts/bb6320058d1c46639372d41628ea2432", '_blank');
     };
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     // ==========================================
-    // 3. 🌐 FOOTER SOCIAL & UTILITY (Đã chỉnh lại vị trí & logic)
+    // 3. 🌐 FOOTER SOCIAL & UTILITY (Giữ nguyên của sếp)
     // ==========================================
     function renderFooter() {
         const footer = document.getElementById('footerSection');
         footer.innerHTML = '';
-
-        // Tạo chỗ chứa các nút
         const btnWrapper = document.createElement('div');
         btnWrapper.style.cssText = 'display:flex; align-items:center; gap:12px; justify-content:center; width:100%;';
 
         if(socialData) {
-            // Nút Email
             if(socialData.email) {
                 const btn = document.createElement('a');
-                btn.href = socialData.email; // Sếp nhớ sửa social.json thành mailto:...
+                btn.href = socialData.email;
                 btn.className = 'social-icon';
                 btn.innerHTML = `<img src="icons/icon_email.png" onerror="this.outerHTML='✉️'" />`;
                 btnWrapper.appendChild(btn);
             }
-            // Nút Follow
             if(socialData.Follow) {
                 const btn = document.createElement('a');
                 btn.href = socialData.Follow;
@@ -429,21 +488,18 @@
                 btn.innerHTML = `<img src="icons/icon_yt.png" onerror="this.outerHTML='🔗'" />`;
                 btnWrapper.appendChild(btn);
             }
-            // Nút Website (Đổi thành hiển thị Info popup)
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'social-icon';
                 btn.innerHTML = `<img src="icons/icon_web.png" onerror="this.outerHTML='🌐'" />`;
                 btn.onclick = () => {
-                    alert('📋 App List 2.0\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
+                    alert('App List\nPhiên bản: 1.0\nPhát hành bởi: Sentechtipsvn\nCảm ơn bạn đã sử dụng!');
                 };
                 btnWrapper.appendChild(btn);
             }
 
-            // Nút Reset App (Bỏ chữ, giữ hình. Đang dùng icon reset tạm, sếp up hình sau đổi link icon)
             const resetBtn = document.createElement('button');
             resetBtn.className = 'util-btn';
-            // Sếp thay src="reset_icon.png" thành hình reset thật của sếp sau nha
             resetBtn.innerHTML = `<img src="icons/reset_icon.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {

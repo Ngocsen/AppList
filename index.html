@@ -460,14 +460,14 @@
                 btn.href = socialData.Follow;
                 btn.target = '_blank';
                 btn.className = 'dock-item';
-                btn.innerHTML = `<img src="icons/icon_yt.png" onerror="this.outerHTML='🔗'" />`;
+                btn.innerHTML = `<img src="icons/icon_sentechtipsvn.png" onerror="this.outerHTML='🔗'" />`;
                 dock.appendChild(btn);
             }
             // Nút Website
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'dock-item';
-                btn.innerHTML = `<img src="icons/icon_web.png" onerror="this.outerHTML='🌐'" />`;
+                btn.innerHTML = `<img src="icons/icon_info.png" onerror="this.outerHTML='🌐'" />`;
                 btn.onclick = () => {
                     alert('📋 App List 2.0 - Sen Hub\nPhiên bản: 2.0\nPhát hành bởi: Sen Tech Tips\nCảm ơn bạn đã sử dụng!');
                 };
@@ -476,7 +476,7 @@
             // Nút Reset
             const resetBtn = document.createElement('button');
             resetBtn.className = 'dock-item';
-            resetBtn.innerHTML = `<img src="icons/reset_icon.png" onerror="this.outerHTML='🔄'" />`; 
+            resetBtn.innerHTML = `<img src="icons/icon_reset.png" onerror="this.outerHTML='🔄'" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
                     localStorage.removeItem(STORAGE_KEY);

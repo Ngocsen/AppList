@@ -485,13 +485,13 @@
                 btn.href = socialData.Follow;
                 btn.target = '_blank';
                 btn.className = 'social-icon';
-                btn.innerHTML = `<img src="icons/icon_yt.png" onerror="this.outerHTML='🔗'" />`;
+                btn.innerHTML = `<img src="icons/icon_sentechtipsvn.png" onerror="this.outerHTML='🔗'" />`;
                 btnWrapper.appendChild(btn);
             }
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'social-icon';
-                btn.innerHTML = `<img src="icons/icon_web.png" onerror="this.outerHTML='🌐'" />`;
+                btn.innerHTML = `<img src="icons/icon_info.png" onerror="this.outerHTML='🌐'" />`;
                 btn.onclick = () => {
                     alert('App List\nPhiên bản: 1.0\nPhát hành bởi: Sentechtipsvn\nCảm ơn bạn đã sử dụng!');
                 };
@@ -500,7 +500,7 @@
 
             const resetBtn = document.createElement('button');
             resetBtn.className = 'util-btn';
-            resetBtn.innerHTML = `<img src="icons/reset_icon.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
+            resetBtn.innerHTML = `<img src="icons/icon_reset.png" onerror="this.outerHTML='🔄'" style="width:14px;height:14px;object-fit:contain;" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
                     localStorage.removeItem(STORAGE_KEY);

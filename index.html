@@ -158,7 +158,7 @@
             position: fixed;
             left: 50%;
             transform: translateX(-50%);
-            bottom: calc(60px + env(safe-area-inset-bottom)); /* 💡 Cách thanh Home ảo 1 khoảng an toàn */
+            bottom: calc(75px + env(safe-area-inset-bottom)); /* 💡 Cách thanh Home ảo 1 khoảng an toàn */
             z-index: 998;
             width: 30px; height: 30px;
             display: flex; align-items: center; justify-content: center;
@@ -596,7 +596,7 @@
             settingsBtn.className = 'dock-item';
             settingsBtn.id = 'settingsBtn';
             // Dùng onerror để nếu bạn chưa tải ảnh lên, nó sẽ hiện ký tự bánh răng
-            settingsBtn.innerHTML = `<img src="icons/icon_setting.png" onerror="this.outerHTML='⚙️'" />`;
+            settingsBtn.innerHTML = `<img src="icons/icon-setting.png" onerror="this.outerHTML='⚙️'" />`;
             
             // 💡 [USER NOTE]: Click vào nút này sẽ chạy logic mở Settings. 
             // Hiện tại mình để thông báo chờ bạn chuẩn bị xong các tính năng khác (đổi nền, font,...)

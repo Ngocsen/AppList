@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -17,11 +17,12 @@
             background-size: 300% 300%;
             animation: gradientShift 8s ease infinite;
             min-height: 100vh;
-            padding-bottom: 100px; /* Chừa khoảng trống cho Dock bên dưới */
+            padding-bottom: 100px;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             padding-top: 40px; 
+            padding-left: 12px; padding-right: 12px; /* 💡 [USER NOTE]: Tăng padding 2 bên để khung không bị chạm viền màn hình nhỏ */
         }
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
@@ -31,7 +32,7 @@
         
         .app-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px; /* 💡 [USER NOTE]: Thu nhỏ max-width lại còn 400px để màn hình nhỏ không bị đẩy lệch */
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
@@ -59,27 +60,29 @@
         .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
 
-        /* --- CHỈNH SỬA PHẦN TÊN & 3 CHẤM --- */
+        /* --- CHỈNH SỬA PHẦN TÊN & 3 CHẤM DỌC --- */
         .app-info {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 2px;
+            gap: 4px;
             width: 100%;
-            padding: 0 4px;
+            padding: 0 2px;
         }
         .app-name {
             font-size: 11px; color: #1e1e2f; opacity: 0.8;
-            width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            flex: 1; /* Chiếm phần lớn diện tích */
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             text-align: center; transition: opacity 0.2s;
         }
         .more-btn {
-            font-size: 14px; line-height: 1; padding: 2px 4px; cursor: pointer;
-            color: #1e1e2f; opacity: 0.4; /* Mờ hơn chữ */
-            flex-shrink: 0; transition: all 0.2s; border-radius: 4px;
-            background: transparent; border: none; font-weight: bold; letter-spacing: 0.5px;
+            font-size: 16px; line-height: 1; padding: 0; cursor: pointer;
+            color: #1e1e2f; opacity: 0.4;
+            flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
+            transition: all 0.2s; border-radius: 4px; background: transparent; border: none; font-weight: bold;
+            transform: scale(0.8); /* Thu nhỏ một chút cho vừa vặn */
         }
-        .more-btn:active { opacity: 1; background: rgba(0,0,0,0.08); }
+        .more-btn:active { opacity: 1; background: rgba(0,0,0,0.1); }
 
         .add-btn {
             background: rgba(255, 255, 255, 0.25); border: 2px dashed rgba(255, 255, 255, 0.6);
@@ -91,7 +94,7 @@
         .add-btn .app-name { margin-top: 6px; font-weight: 600; color: #4f46e5; font-size: 11px;}
         .hide-add { display: none !important; }
 
-        /* MODAL THÊM APP */
+        /* MODAL THÊM ỨNG DỤNG */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(10px);
             opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 1000;
@@ -116,7 +119,7 @@
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
         /* ======================================================== */
-        /*  DOCK CỐ ĐỊNH DƯỚI CÙNG (VIÊN THUỐC KÍNH MỜ)            */
+        /*  DOCK CỐ ĐỊNH DƯỚI CÙNG                                  */
         /* ======================================================== */
         #dockMenu {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
@@ -131,7 +134,6 @@
             gap: 12px; z-index: 999; width: fit-content; max-width: 85%;
         }
 
-        /* Các nút bấm trong Dock */
         .dock-item {
             width: 32px; height: 32px; border-radius: 12px;
             background: rgba(255,255,255,0.4);
@@ -142,7 +144,7 @@
         .dock-item img { width: 90%; height: 90%; object-fit: contain; border-radius: 6px; }
 
         /* ======================================================== */
-        /*  POPUP MENU (CHỈ CÓ CHỮ)                                 */
+        /*  POPUP MENU APPLE STYLE                                  */
         /* ======================================================== */
         .context-menu {
             position: fixed; z-index: 9999;
@@ -184,13 +186,9 @@
             .modal-content { background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(255,255,255,0.05); }
             .modal-content h3, .modal-item span { color: #f1f5f9; }
             .modal-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.05); }
-            
-            /* DARK MODE CHO DOCK */
             #dockMenu { background: rgba(30, 27, 75, 0.4); border-color: rgba(255,255,255,0.05); }
             .dock-item { background: rgba(255,255,255,0.05); }
             .dock-item:active { background: rgba(255,255,255,0.15); }
-            
-            /* DARK MODE CHO MENU */
             .context-menu { background: rgba(30, 27, 75, 0.85); border: 1px solid rgba(255,255,255,0.05); }
             .context-menu .menu-item { color: #f1f5f9; }
             .context-menu .menu-item:active { background: rgba(255,255,255,0.1); }
@@ -217,29 +215,28 @@
 
 <!-- POPUP MENU APPLE STYLE -->
 <div class="context-menu" id="contextMenu">
-    <div class="menu-item" id="menuMoveUp">Chuyển lên</div>
-    <div class="menu-item" id="menuMoveDown">Chuyển xuống</div>
+    <div class="menu-item" id="menuMoveTop">Đưa lên đầu</div>
+    <div class="menu-item" id="menuRename">Đổi tên</div> <!-- 💡 [USER NOTE]: Chức năng đổi tên mới -->
     <div class="menu-item delete" id="menuDelete">Xoá</div>
 </div>
 
 <!-- MODAL ADD APP -->
 <div class="modal-overlay" id="addAppModal">
     <div class="modal-content">
-        <h3>➕ Add App</h3>
+        <h3>➕ Thêm ứng dụng</h3> <!-- 💡 [USER NOTE]: Sửa sang Tiếng Việt -->
         <input type="text" class="search-box" id="searchBox" placeholder="Tìm kiếm ứng dụng..." oninput="filterModalApps(this.value)" />
         <div class="modal-list" id="modalList"></div>
-        <button class="close-modal" onclick="closeModal()">Close</button>
+        <button class="close-modal" onclick="closeModal()">Đóng</button> <!-- 💡 [USER NOTE]: Sửa sang Tiếng Việt -->
     </div>
 </div>
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI & FALLBACK DỮ LIỆU (Chống lỗi iOS PWA)
+    // 1. 📦 TẢI & FALLBACK DỮ LIỆU
     // ==========================================
     let appDatabase = {};
     let socialData = {};
 
-    // Dữ liệu dự phòng (Fallback) nếu load file json thất bại
     const FALLBACK_DB = {
         "vn.com.vng.zingalo":{"Name":"Zalo","icon":"https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/a6/fd/de/a6fdde29-8d09-cd61-d8e9-bd5293b9cf21/AppIcon-0-0-1x_U007emarketing-0-8-0-85-220.png/100x100bb.png"},
         "com.deepseek.chat":{"Name":"DeepSeek","icon":"https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/67/77/f4/6777f403-5916-d746-c939-d3cc694be352/AppIcon-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/100x100bb.png"},
@@ -253,7 +250,6 @@
         "website":"info"
     };
 
-    // Dùng basePath để dẫn đường dẫn chính xác
     const basePath = window.location.pathname.replace(/\/+$/, '');
 
     Promise.all([
@@ -276,6 +272,7 @@
     // 2. ⚙️ LOGIC CHÍNH
     // ==========================================
     const STORAGE_KEY = 'myAppList';
+    const STORAGE_NAME_KEY = 'myAppNames'; // 💡 [USER NOTE]: Key lưu trữ tên đã đổi của người dùng
     const MAX_APPS = 16;
     const grid = document.getElementById('appGrid');
     const modal = document.getElementById('addAppModal');
@@ -283,6 +280,29 @@
 
     let currentSelectedAppId = null;
     let isMenuOpen = false;
+
+    // 💡 [USER NOTE]: Hàm lấy danh sách tên đã đổi từ localStorage
+    function getCustomNames() {
+        const stored = localStorage.getItem(STORAGE_NAME_KEY);
+        if (stored) { 
+            try { return JSON.parse(stored); } 
+            catch(e) { localStorage.removeItem(STORAGE_NAME_KEY); return {}; }
+        }
+        return {};
+    }
+
+    // 💡 [USER NOTE]: Hàm lưu tên mới. Nếu nhập rỗng, nó sẽ tự xóa tên tùy chỉnh để trở về tên mặc định
+    function saveCustomName(id, newName) {
+        let names = getCustomNames();
+        if (newName && newName.trim() !== "") {
+            names[id] = newName.trim();
+        } else {
+            delete names[id]; 
+        }
+        localStorage.setItem(STORAGE_NAME_KEY, JSON.stringify(names));
+        renderGrid();
+        closeContextMenu();
+    }
 
     function getSelectedApps() {
         const stored = localStorage.getItem(STORAGE_KEY);
@@ -295,12 +315,10 @@
                 }
                 return parsed;
             } catch(e) { 
-                // Nếu lỗi parse JSON -> xóa key rác để lần sau load được
                 localStorage.removeItem(STORAGE_KEY);
                 console.warn("Đã phát hiện và xóa dữ liệu rác khỏi LocalStorage");
             }
         }
-        // Trả về mặc định nếu chưa có data hoặc đã xóa data rác
         return ["com.deepseek.chat", "com.facebook.Messenger", "com.facebook.Facebook", "com.burbn.instagram"];
     }
 
@@ -339,14 +357,22 @@
         
         const useIcon = data.icon && data.icon.trim() !== "";
 
+        // 💡 [USER NOTE]: Kiểm tra xem có tên tùy chỉnh không. Nếu có thì dùng tên tùy chỉnh hiển thị
+        let displayName = data.Name;
+        const customNames = getCustomNames();
+        if (customNames[id]) {
+            displayName = customNames[id];
+        }
+
+        // 💡 [USER NOTE]: Sửa biểu tượng 3 chấm ngang (...) thành 3 chấm dọc (&#8942;)
         div.innerHTML = `
             <div class="icon-wrapper">
-                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
-                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
+                <img src="${useIcon ? data.icon : ''}" alt="${displayName}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${displayName.charAt(0).toUpperCase()}</span>
             </div>
             <div class="app-info">
-                <span class="app-name">${data.Name}</span>
-                <button class="more-btn" data-id="${id}">⋯</button>
+                <span class="app-name">${displayName}</span>
+                <button class="more-btn" data-id="${id}">&#8942;</button>
             </div>
         `;
 
@@ -369,9 +395,17 @@
         currentSelectedAppId = id;
         isMenuOpen = true;
         
-        document.getElementById('menuMoveUp').onclick = () => { moveApp(id, 'up'); };
-        document.getElementById('menuMoveDown').onclick = () => { moveApp(id, 'down'); };
+        document.getElementById('menuMoveTop').onclick = () => { moveAppToTop(id); };
         document.getElementById('menuDelete').onclick = () => { removeApp(id); };
+        document.getElementById('menuRename').onclick = () => {
+            // 💡 [USER NOTE]: Lấy tên hiện tại (ưu tiên tên tùy chỉnh, nếu không có thì lấy tên gốc trong DB)
+            const currentName = getCustomNames()[id] || appDatabase[id].Name;
+            // 💡 [USER NOTE]: Hiện hộp thoại nhập tên mới trên điện thoại (prompt là hàm có sẵn)
+            const newName = prompt("Nhập tên mới cho ứng dụng:", currentName);
+            if (newName !== null) { 
+                saveCustomName(id, newName);
+            }
+        };
 
         let clientX = event.clientX || (event.touches && event.touches[0].clientX);
         let clientY = event.clientY || (event.touches && event.touches[0].clientY);
@@ -408,13 +442,16 @@
         saveSelectedApps(current);
     }
 
-    function moveApp(id, direction) {
+    // 💡 [USER NOTE]: Viết lại logic chuyển lên đầu
+    function moveAppToTop(id) {
         let current = getSelectedApps();
         const currentIndex = current.indexOf(id);
-        let newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
-        if (newIndex < 0 || newIndex >= current.length) return;
-        [current[currentIndex], current[newIndex]] = [current[newIndex], current[currentIndex]];
-        saveSelectedApps(current);
+        if (currentIndex > 0) {
+            // Cắt phần tử ra và chèn vào đầu mảng
+            current.splice(currentIndex, 1);
+            current.unshift(id);
+            saveSelectedApps(current);
+        }
     }
 
     // --- MODAL LOGIC ---
@@ -469,23 +506,20 @@
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     // ==========================================
-    // 3. 🌐 DOCK SOCIAL & UTILITY (VIÊN THUỐC DƯỚI CÙNG)
+    // 3. 🌐 DOCK SOCIAL & UTILITY
     // ==========================================
     function renderDock() {
         const dock = document.getElementById('dockMenu');
         dock.innerHTML = '';
 
         if(socialData) {
-            // Nút Email
             if(socialData.email) {
                 const btn = document.createElement('a');
                 btn.href = socialData.email;
                 btn.className = 'dock-item';
-                // Thêm onerror để phòng trường hợp lỗi ảnh local, sẽ hiện ký tự ✉️
                 btn.innerHTML = `<img src="icons/icon_email.png" onerror="this.outerHTML='✉️'" />`;
                 dock.appendChild(btn);
             }
-            // Nút Follow
             if(socialData.Follow) {
                 const btn = document.createElement('a');
                 btn.href = socialData.Follow;
@@ -494,7 +528,6 @@
                 btn.innerHTML = `<img src="icons/icon_sentechtipsvn.png" onerror="this.outerHTML='🔗'" />`;
                 dock.appendChild(btn);
             }
-            // Nút Website
             if(socialData.website) {
                 const btn = document.createElement('button');
                 btn.className = 'dock-item';
@@ -504,13 +537,13 @@
                 };
                 dock.appendChild(btn);
             }
-            // Nút Reset
             const resetBtn = document.createElement('button');
             resetBtn.className = 'dock-item';
             resetBtn.innerHTML = `<img src="icons/icon_reset.png" onerror="this.outerHTML='🔄'" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
                     localStorage.removeItem(STORAGE_KEY);
+                    localStorage.removeItem(STORAGE_NAME_KEY); // 💡 [USER NOTE]: Xóa luôn dữ liệu tên đã đổi khi Reset
                     renderGrid();
                 }
             };
@@ -519,9 +552,8 @@
     }
 
     // ==========================================
-    // 4. 📲 ĐĂNG KÝ SERVICE WORKER (GIỮ DATA TRÊN iOS)
+    // 4. 📲 ĐĂNG KÝ SERVICE WORKER
     // ==========================================
-    // Lưu ý: Bạn cần tạo thêm file sw.js để code này hoạt động.
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(basePath + '/sw.js')
         .then(() => console.log('✅ PWA Service Worker đã đăng ký thành công!'))

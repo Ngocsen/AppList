@@ -71,7 +71,8 @@
         }
         .app-name {
             font-size: 11px; color: #1e1e2f; opacity: 0.8;
-            flex: 1; /* Chiếm phần lớn diện tích */
+            flex: 0 0 auto; /* 💡 Quan trọng: Dòng này giúp tên ứng dụng KHÔNG bị kéo giãn */
+            max-width: 70px; /* 💡 Giới hạn chiều dài tối đa để nó không bị đè lên dấu 3 chấm */
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             text-align: center; transition: opacity 0.2s;
         }

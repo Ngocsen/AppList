@@ -22,7 +22,7 @@
             justify-content: center;
             align-items: flex-start;
             padding-top: 40px; 
-            padding-left: 12px; padding-right: 12px; /* 💡 [USER NOTE]: Tăng padding 2 bên để khung không bị chạm viền màn hình nhỏ */
+            padding-left: 12px; padding-right: 12px;
         }
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
@@ -32,7 +32,7 @@
         
         .app-container {
             width: 100%;
-            max-width: 400px; /* 💡 [USER NOTE]: Thu nhỏ max-width lại còn 400px để màn hình nhỏ không bị đẩy lệch */
+            max-width: 400px;
             background: rgba(255, 255, 255, 0.3);
             backdrop-filter: blur(40px);
             -webkit-backdrop-filter: blur(40px);
@@ -60,7 +60,6 @@
         .icon-wrapper img { width: 100%; height: 100%; object-fit: contain; border-radius: 16px; }
         .icon-wrapper .fallback-text { font-size: 24px; font-weight: 600; color: #1e1e2f; display: none; }
 
-        /* --- CHỈNH SỬA PHẦN TÊN & 3 CHẤM DỌC --- */
         .app-info {
             display: flex;
             align-items: center;
@@ -71,8 +70,8 @@
         }
         .app-name {
             font-size: 11px; color: #1e1e2f; opacity: 0.8;
-            flex: 0 0 auto; /* 💡 Quan trọng: Dòng này giúp tên ứng dụng KHÔNG bị kéo giãn */
-            max-width: 70px; /* 💡 Giới hạn chiều dài tối đa để nó không bị đè lên dấu 3 chấm */
+            flex: 0 0 auto;
+            max-width: 70px;
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
             text-align: center; transition: opacity 0.2s;
         }
@@ -81,7 +80,7 @@
             color: #1e1e2f; opacity: 0.4;
             flex-shrink: 0; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center;
             transition: all 0.2s; border-radius: 4px; background: transparent; border: none; font-weight: bold;
-            transform: scale(0.8); /* Thu nhỏ một chút cho vừa vặn */
+            transform: scale(0.8);
         }
         .more-btn:active { opacity: 1; background: rgba(0,0,0,0.1); }
 
@@ -120,7 +119,7 @@
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
         /* ======================================================== */
-        /*  DOCK CỐ ĐỊNH DƯỚI CÙNG                                  */
+        /*  DOCK CỐ ĐỊNH DƯỚI CÙNG & NÚT ẨN HIỆN                    */
         /* ======================================================== */
         #dockMenu {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
@@ -133,6 +132,14 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), 0 0 15px rgba(139, 92, 246, 0.1);
             display: flex; align-items: center; justify-content: center;
             gap: 12px; z-index: 999; width: fit-content; max-width: 85%;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 💡 Tạo hiệu ứng trượt mượt */
+        }
+        
+        /* 💡 Class ẩn dock */
+        #dockMenu.hidden {
+            opacity: 0;
+            transform: translateX(-50%) translateY(30px);
+            pointer-events: none;
         }
 
         .dock-item {
@@ -143,6 +150,41 @@
         }
         .dock-item:active { transform: scale(0.85); background: rgba(255,255,255,0.8); }
         .dock-item img { width: 90%; height: 90%; object-fit: contain; border-radius: 6px; }
+
+        /* ======================================================== */
+        /*  NÚT MŨI TÊN ẨN HIỆN DOCK (Thay đổi chức năng)          */
+        /* ======================================================== */
+        #dockToggleBtn {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: calc(45px + env(safe-area-inset-bottom)); /* 💡 Cách thanh Home ảo 1 khoảng an toàn */
+            z-index: 998;
+            width: 30px; height: 30px;
+            display: flex; align-items: center; justify-content: center;
+            background: transparent; border: none; cursor: pointer;
+            opacity: 0.6;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+        }
+        #dockToggleBtn:active {
+            transform: translateX(-50%) scale(0.85);
+            opacity: 1;
+        }
+        #dockToggleBtn svg {
+            width: 22px; height: 22px;
+            stroke: rgba(255, 255, 255, 0.8);
+            stroke-width: 2.5;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* 💡 Tạo hiệu ứng xoay mũi tên */
+        }
+        /* 💡 Khi mũi tên xoay xuống dưới (để gợi ý ấn để hiện Dock lên) */
+        #dockToggleBtn.arrow-down svg {
+            transform: rotate(180deg);
+        }
+        @media (prefers-color-scheme: dark) {
+            #dockToggleBtn svg { stroke: rgba(255, 255, 255, 0.6); }
+        }
 
         /* ======================================================== */
         /*  POPUP MENU APPLE STYLE                                  */
@@ -214,20 +256,25 @@
 <!-- DOCK CỐ ĐỊNH DƯỚI CÙNG -->
 <div id="dockMenu"></div>
 
+<!-- 🆕 NÚT MŨI TÊN ẨN HIỆN DOCK (Thay vì scroll) -->
+<button id="dockToggleBtn">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+</button>
+
 <!-- POPUP MENU APPLE STYLE -->
 <div class="context-menu" id="contextMenu">
     <div class="menu-item" id="menuMoveTop">Đưa lên đầu</div>
-    <div class="menu-item" id="menuRename">Đổi tên</div> <!-- 💡 [USER NOTE]: Chức năng đổi tên mới -->
+    <div class="menu-item" id="menuRename">Đổi tên</div>
     <div class="menu-item delete" id="menuDelete">Xoá</div>
 </div>
 
 <!-- MODAL ADD APP -->
 <div class="modal-overlay" id="addAppModal">
     <div class="modal-content">
-        <h3>➕ Thêm ứng dụng</h3> <!-- 💡 [USER NOTE]: Sửa sang Tiếng Việt -->
+        <h3>➕ Thêm ứng dụng</h3>
         <input type="text" class="search-box" id="searchBox" placeholder="Tìm kiếm ứng dụng..." oninput="filterModalApps(this.value)" />
         <div class="modal-list" id="modalList"></div>
-        <button class="close-modal" onclick="closeModal()">Đóng</button> <!-- 💡 [USER NOTE]: Sửa sang Tiếng Việt -->
+        <button class="close-modal" onclick="closeModal()">Đóng</button>
     </div>
 </div>
 
@@ -273,7 +320,7 @@
     // 2. ⚙️ LOGIC CHÍNH
     // ==========================================
     const STORAGE_KEY = 'myAppList';
-    const STORAGE_NAME_KEY = 'myAppNames'; // 💡 [USER NOTE]: Key lưu trữ tên đã đổi của người dùng
+    const STORAGE_NAME_KEY = 'myAppNames';
     const MAX_APPS = 16;
     const grid = document.getElementById('appGrid');
     const modal = document.getElementById('addAppModal');
@@ -282,7 +329,6 @@
     let currentSelectedAppId = null;
     let isMenuOpen = false;
 
-    // 💡 [USER NOTE]: Hàm lấy danh sách tên đã đổi từ localStorage
     function getCustomNames() {
         const stored = localStorage.getItem(STORAGE_NAME_KEY);
         if (stored) { 
@@ -292,7 +338,6 @@
         return {};
     }
 
-    // 💡 [USER NOTE]: Hàm lưu tên mới. Nếu nhập rỗng, nó sẽ tự xóa tên tùy chỉnh để trở về tên mặc định
     function saveCustomName(id, newName) {
         let names = getCustomNames();
         if (newName && newName.trim() !== "") {
@@ -358,14 +403,12 @@
         
         const useIcon = data.icon && data.icon.trim() !== "";
 
-        // 💡 [USER NOTE]: Kiểm tra xem có tên tùy chỉnh không. Nếu có thì dùng tên tùy chỉnh hiển thị
         let displayName = data.Name;
         const customNames = getCustomNames();
         if (customNames[id]) {
             displayName = customNames[id];
         }
 
-        // 💡 [USER NOTE]: Sửa biểu tượng 3 chấm ngang (...) thành 3 chấm dọc (&#8942;)
         div.innerHTML = `
             <div class="icon-wrapper">
                 <img src="${useIcon ? data.icon : ''}" alt="${displayName}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
@@ -399,9 +442,7 @@
         document.getElementById('menuMoveTop').onclick = () => { moveAppToTop(id); };
         document.getElementById('menuDelete').onclick = () => { removeApp(id); };
         document.getElementById('menuRename').onclick = () => {
-            // 💡 [USER NOTE]: Lấy tên hiện tại (ưu tiên tên tùy chỉnh, nếu không có thì lấy tên gốc trong DB)
             const currentName = getCustomNames()[id] || appDatabase[id].Name;
-            // 💡 [USER NOTE]: Hiện hộp thoại nhập tên mới trên điện thoại (prompt là hàm có sẵn)
             const newName = prompt("Nhập tên mới cho ứng dụng:", currentName);
             if (newName !== null) { 
                 saveCustomName(id, newName);
@@ -443,12 +484,10 @@
         saveSelectedApps(current);
     }
 
-    // 💡 [USER NOTE]: Viết lại logic chuyển lên đầu
     function moveAppToTop(id) {
         let current = getSelectedApps();
         const currentIndex = current.indexOf(id);
         if (currentIndex > 0) {
-            // Cắt phần tử ra và chèn vào đầu mảng
             current.splice(currentIndex, 1);
             current.unshift(id);
             saveSelectedApps(current);
@@ -507,7 +546,7 @@
     modal.onclick = (e) => { if (e.target === modal) closeModal(); };
 
     // ==========================================
-    // 3. 🌐 DOCK SOCIAL & UTILITY
+    // 3. 🌐 DOCK SOCIAL & UTILITY + SETTINGS
     // ==========================================
     function renderDock() {
         const dock = document.getElementById('dockMenu');
@@ -538,22 +577,66 @@
                 };
                 dock.appendChild(btn);
             }
+            
+            // 💡 [USER NOTE]: Nút Reset giữ nguyên
             const resetBtn = document.createElement('button');
             resetBtn.className = 'dock-item';
             resetBtn.innerHTML = `<img src="icons/icon_reset.png" onerror="this.outerHTML='🔄'" />`; 
             resetBtn.onclick = () => {
                 if(confirm('Xoá sạch danh sách app hiện tại và trở về mặc định?')) {
                     localStorage.removeItem(STORAGE_KEY);
-                    localStorage.removeItem(STORAGE_NAME_KEY); // 💡 [USER NOTE]: Xóa luôn dữ liệu tên đã đổi khi Reset
+                    localStorage.removeItem(STORAGE_NAME_KEY);
                     renderGrid();
                 }
             };
             dock.appendChild(resetBtn);
+
+            // 💡 [USER NOTE]: Nút Settings mới dùng ảnh icon_setting.png
+            const settingsBtn = document.createElement('button');
+            settingsBtn.className = 'dock-item';
+            settingsBtn.id = 'settingsBtn';
+            // Dùng onerror để nếu bạn chưa tải ảnh lên, nó sẽ hiện ký tự bánh răng
+            settingsBtn.innerHTML = `<img src="icons/icon_setting.png" onerror="this.outerHTML='⚙️'" />`;
+            
+            // 💡 [USER NOTE]: Click vào nút này sẽ chạy logic mở Settings. 
+            // Hiện tại mình để thông báo chờ bạn chuẩn bị xong các tính năng khác (đổi nền, font,...)
+            settingsBtn.onclick = () => {
+                // === KHO TRỮ LOGIC SETTINGS CHO BẢN SAU ===
+                alert('⚙️ Chức năng cài đặt đang được phát triển! Hãy chờ các bản cập nhật tiếp theo.');
+                // === HẾT KHO TRỮ ===
+            };
+            dock.appendChild(settingsBtn);
         }
     }
 
     // ==========================================
-    // 4. 📲 ĐĂNG KÝ SERVICE WORKER
+    // 4. 🆕 NÚT MŨI TÊN BẤM ẨN HIỆN DOCK
+    // ==========================================
+    let isDockVisible = true;
+    const dockMenu = document.getElementById('dockMenu');
+    const dockToggleBtn = document.getElementById('dockToggleBtn');
+    const toggleIcon = dockToggleBtn.querySelector('svg');
+
+    dockToggleBtn.addEventListener('click', function() {
+        isDockVisible = !isDockVisible;
+        
+        if (isDockVisible) {
+            // Hiện Dock lên
+            dockMenu.classList.remove('hidden');
+            dockToggleBtn.classList.remove('arrow-down');
+            // Đổi mũi tên hướng lên (Gợi ý bấm để ẩn)
+            toggleIcon.innerHTML = `<polyline points="18 15 12 9 6 15"></polyline>`;
+        } else {
+            // Ẩn Dock xuống
+            dockMenu.classList.add('hidden');
+            dockToggleBtn.classList.add('arrow-down');
+            // Đổi mũi tên hướng xuống (Gợi ý bấm để hiện)
+            toggleIcon.innerHTML = `<polyline points="6 9 12 15 18 9"></polyline>`;
+        }
+    });
+
+    // ==========================================
+    // 5. 📲 ĐĂNG KÝ SERVICE WORKER
     // ==========================================
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register(basePath + '/sw.js')

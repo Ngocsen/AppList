@@ -112,6 +112,18 @@
             background: rgba(255,255,255,0.5); margin-bottom: 12px; font-size: 14px; outline: none;
         }
         .modal-list { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+        
+        .modal-divider {
+            grid-column: 1 / -1;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            padding: 10px 0 4px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
         .modal-item { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,0.5); padding: 10px; border-radius: 16px; cursor: pointer; border: 1px solid transparent; }
         .modal-item:active { background: rgba(255,255,255,0.9); border-color: #4f46e5; transform: scale(0.95); }
         .modal-item img { width: 40px; height: 40px; object-fit: contain; }
@@ -150,12 +162,11 @@
         .dock-item img { width: 90%; height: 90%; object-fit: contain; border-radius: 6px; }
 
         /* ======================================================== */
-        /*  NÚT MŨI TÊN ẨN HIỆN DOCK (CHỐT LẠI VỊ TRÍ MẶC ĐỊNH)    */
+        /*  NÚT MŨI TÊN ẨN HIỆN DOCK                              */
         /* ======================================================== */
         #dockToggleBtn {
             position: fixed;
             left: 50%;
-            /* 💡 [USER NOTE]: Mặc định nằm dưới cùng, sát thanh Home ảo */
             bottom: calc(30px + env(safe-area-inset-bottom)); 
             z-index: 998;
             width: 34px; height: 34px;
@@ -166,7 +177,6 @@
             opacity: 0.8;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            /* 💡 Mặc định sẽ nhảy xuống dưới, vì lúc đầu ẩn Dock */
             animation: bounceDownLoop 4s ease-in-out infinite; 
         }
         #dockToggleBtn:active {
@@ -180,15 +190,12 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 💡 Animation nhảy lên (Khi Dock hiện) */
         @keyframes bounceUpLoop {
             0%, 75% { transform: translateX(-50%) translateY(0) scale(1); }
             80% { transform: translateX(-50%) translateY(-8px) scale(1.1); }
             85% { transform: translateX(-50%) translateY(-3px) scale(1); }
             90%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
         }
-
-        /* 💡 Animation nhảy xuống (Khi Dock ẩn) */
         @keyframes bounceDownLoop {
             0%, 75% { transform: translateX(-50%) translateY(0) scale(1); }
             80% { transform: translateX(-50%) translateY(8px) scale(1.1); }
@@ -196,21 +203,11 @@
             90%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
         }
 
-        #dockToggleBtn.arrow-down {
-            animation: bounceDownLoop 4s ease-in-out infinite;
-        }
-        /* Bỏ class arrow-down sẽ tự dùng animation mặc định (bounceUpLoop) */
-        #dockToggleBtn:not(.arrow-down) {
-            animation: bounceUpLoop 4s ease-in-out infinite;
-        }
+        #dockToggleBtn.arrow-down { animation: bounceDownLoop 4s ease-in-out infinite; }
+        #dockToggleBtn:not(.arrow-down) { animation: bounceUpLoop 4s ease-in-out infinite; }
+        #dockToggleBtn.arrow-down svg { transform: rotate(180deg); }
 
-        #dockToggleBtn.arrow-down svg {
-            transform: rotate(180deg);
-        }
-
-        @media (prefers-color-scheme: dark) {
-            #dockToggleBtn svg { stroke: rgba(255, 255, 255, 0.6); }
-        }
+        @media (prefers-color-scheme: dark) { #dockToggleBtn svg { stroke: rgba(255, 255, 255, 0.6); } }
 
         /* ======================================================== */
         /*  POPUP MENU APPLE STYLE                                  */
@@ -306,6 +303,12 @@
 
 <script>
     // ==========================================
+    // 0. ⚙️ CẤU HÌNH CHUNG
+    // ==========================================
+    // Sếp yên tâm, link Worker của sếp đã được nhúng vào đây!
+    const WORKER_URL = 'https://app-search-proxy.hongocsen.workers.dev/'; 
+
+    // ==========================================
     // 1. 📦 TẢI DỮ LIỆU
     // ==========================================
     let appDatabase = {};
@@ -320,9 +323,12 @@
         "com.burbn.instagram":{"Name":"Instagram","icon":"https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/c3/c1/dc/c3c1dcd8-7f07-0ec0-c901-7487134a98ad/Prod-0-0-1x_U007epad-0-1-0-sRGB-85-220.png/100x100bb.png"}
     };
     const FALLBACK_SOCIAL = {
-        "email":"mailto:sentechtips@gmail.com",
-        "Follow":"https://browse.shortcuty.app/user/Sentechtipsvn",
-        "website":"info"
+        "links": {
+            "email":"mailto:sentechtips@gmail.com",
+            "social_follow":"https://browse.shortcuty.app/user/Sentechtipsvn",
+            "app_info":"info",
+            "plugin_shortcut":"https://www.icloud.com/shortcuts/bb6320058d1c46639372d41628ea2432"
+        }
     };
     const FALLBACK_LANG = {
         "common": { "app_title": "AppList", "loading": "Đang tải..." },
@@ -346,8 +352,6 @@
         socialData = social; 
         langData = lang;
         renderGrid(); renderDock(); renderModal(); 
-        
-        // 💡 [USER NOTE]: Ngay khi tải xong giao diện, khởi tạo trạng thái Dock và mũi tên về vị trí dưới cùng
         applyInitialDockState(); 
     })
     .catch(error => { 
@@ -359,6 +363,7 @@
         applyInitialDockState(); 
     });
 
+    // Hàm đa ngôn ngữ
     function t(key, replacements) {
         if (!langData) return key;
         const keys = key.split('.');
@@ -385,9 +390,11 @@
     const grid = document.getElementById('appGrid');
     const modal = document.getElementById('addAppModal');
     const modalList = document.getElementById('modalList');
+    const searchBox = document.getElementById('searchBox');
 
     let currentSelectedAppId = null;
     let isMenuOpen = false;
+    let searchTimeout = null; // Dùng để debounce tìm kiếm
 
     function getCustomNames() {
         const stored = localStorage.getItem(STORAGE_NAME_KEY);
@@ -554,46 +561,140 @@
         }
     }
 
-    // --- MODAL LOGIC ---
+    // --- MODAL LOGIC & LIVE SEARCH ---
+    // Render danh sách gốc
     function renderModal() {
         if(Object.keys(appDatabase).length === 0) return;
         const selectedIds = getSelectedApps();
         const available = Object.keys(appDatabase).filter(id => !selectedIds.includes(id));
-        modalList.innerHTML = '';
+        
         document.querySelector('#addAppModal h3').innerText = t('modal.title_add_app');
         document.getElementById('searchBox').placeholder = t('modal.search_placeholder');
+        document.getElementById('searchBox').value = ''; // Reset search
 
-        available.forEach(id => {
-            const data = appDatabase[id];
+        renderModalList(available, false); // Render list cũ
+    }
+
+    // Hàm chung để render list
+    function renderModalList(availableIds, isSearchResult) {
+        modalList.innerHTML = '';
+        const selectedIds = getSelectedApps();
+
+        // Nếu đang hiện kết quả tìm kiếm, thêm dòng tiêu đề cho phần này
+        if (isSearchResult) {
+            const header = document.createElement('div');
+            header.className = 'modal-divider';
+            header.innerText = 'Kết quả từ App Store';
+            modalList.appendChild(header);
+        }
+
+        // Nếu danh sách rỗng
+        if (availableIds.length === 0) {
+            const empty = document.createElement('div');
+            empty.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 20px; color: #888; font-size: 14px;';
+            empty.innerText = isSearchResult ? 'Không tìm thấy ứng dụng nào.' : 'Đã thêm hết ứng dụng có sẵn.';
+            modalList.appendChild(empty);
+            return;
+        }
+
+        // Render item
+        availableIds.forEach(id => {
+            // Data có thể lấy từ appDatabase hoặc từ kết quả search API
+            const data = isSearchResult ? id : appDatabase[id]; // Nếu search, id là object chứa data
+
+            let bundleId, name, icon;
+            if (isSearchResult) {
+                bundleId = data.bundleId;
+                name = data.trackName;
+                icon = data.artworkUrl100 || '';
+            } else {
+                bundleId = id;
+                name = data.Name;
+                icon = data.icon || '';
+            }
+
             const item = document.createElement('div');
             item.className = 'modal-item';
-            item.dataset.id = id;
-            item.dataset.name = data.Name.toLowerCase();
-            const useIcon = data.icon && data.icon.trim() !== "";
+            item.dataset.id = bundleId;
+            item.dataset.name = name.toLowerCase();
+
+            const useIcon = icon && icon.trim() !== "";
             item.innerHTML = `
-                <img src="${useIcon ? data.icon : ''}" alt="${data.Name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
-                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${data.Name.charAt(0).toUpperCase()}</span>
-                <span>${data.Name}</span>
+                <img src="${useIcon ? icon : ''}" alt="${name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" style="${useIcon ? '' : 'display:none;'}">
+                <span class="fallback-text" style="${useIcon ? 'display:none;' : 'display:block;'}">${name.charAt(0).toUpperCase()}</span>
+                <span>${name}</span>
             `;
             item.onclick = () => {
                 let current = getSelectedApps();
                 if(current.length >= MAX_APPS) { alert(t('modal.max_apps_limit', {max: MAX_APPS})); return; }
-                current.push(id);
+                
+                // Nếu là search result, thêm vào current
+                current.push(bundleId);
+                
+                // Lưu thêm icon vào database tạm thời (để hiển thị)
+                if (isSearchResult) {
+                    if (!appDatabase[bundleId]) {
+                        appDatabase[bundleId] = { Name: name, icon: icon };
+                    }
+                }
                 saveSelectedApps(current);
                 closeModal();
             };
             modalList.appendChild(item);
         });
-        document.getElementById('searchBox').value = '';
     }
 
-    function filterModalApps(query) {
-        const items = modalList.children;
-        const q = query.toLowerCase().trim();
-        for (let i = 0; i < items.length; i++) {
-            const name = items[i].dataset.name || '';
-            items[i].style.display = name.includes(q) || q === '' ? 'flex' : 'none';
+    // Hàm Search trên API
+    function performSearch(query) {
+        const q = query.trim();
+        if (q.length < 2) {
+            // Nếu xóa hết chữ, quay về list cũ
+            const selectedIds = getSelectedApps();
+            const available = Object.keys(appDatabase).filter(id => !selectedIds.includes(id));
+            renderModalList(available, false);
+            return;
         }
+
+        // Gọi Cloudflare Worker của sếp
+        // Fix: Truyền term parameter đúng cách
+        fetch(WORKER_URL + '?term=' + encodeURIComponent(q))
+            .then(response => {
+                if (!response.ok) throw new Error('API Error');
+                return response.json();
+            })
+            .then(data => {
+                // Lấy danh sách bundleId đã có (để loại trừ)
+                const currentIds = getSelectedApps();
+                
+                // Lọc kết quả từ Apple
+                const results = data.results || [];
+                // Loại bỏ những app đã có và giá rẻ? Không, lấy hết để hiện.
+                // Nhưng lọc bỏ những app đã có trong danh sách chính.
+                const newResults = results.filter(item => !currentIds.includes(item.bundleId));
+                
+                // Render kết quả tìm kiếm
+                renderModalList(newResults, true);
+            })
+            .catch(error => {
+                console.error("Search error:", error);
+                // Nếu lỗi, có thể hiện thông báo lỗi tìm kiếm trong list
+                const errDiv = document.createElement('div');
+                errDiv.style.cssText = 'grid-column: 1 / -1; text-align: center; padding: 10px; color: #ff3b30; font-size: 13px;';
+                errDiv.innerText = 'Lỗi kết nối App Store. Vui lòng thử lại.';
+                modalList.innerHTML = ''; // Xóa list cũ
+                modalList.appendChild(errDiv);
+            });
+    }
+
+    // Hàm filter cho App cũ và gọi search API
+    function filterModalApps(query) {
+        clearTimeout(searchTimeout);
+        const q = query.trim();
+        
+        // Chỉ search khi có ký tự, ngược lại hiện list mặc định
+        searchTimeout = setTimeout(() => {
+            performSearch(query);
+        }, 500); // Debounce 500ms
     }
 
     function closeModal() { modal.classList.remove('active'); }
@@ -669,14 +770,13 @@
     }
 
     // ==========================================
-    // 4. 🆕 NÚT MŨI TÊN ẨN HIỆN DOCK (ĐÃ SỬA LOGIC KHỞI TẠO LẦN ĐẦU)
+    // 4. 🆕 NÚT MŨI TÊN ẨN HIỆN DOCK
     // ==========================================
-    let isDockVisible = false; // 💡 [USER NOTE]: Đổi mặc định thành false, dock sẽ tự ẩn lúc mới mở
+    let isDockVisible = false;
     const dockMenu = document.getElementById('dockMenu');
     const dockToggleBtn = document.getElementById('dockToggleBtn');
     const toggleIcon = dockToggleBtn.querySelector('svg');
 
-    // 💡 [USER NOTE]: Hàm set trạng thái ban đầu cho Dock và mũi tên
     function applyInitialDockState() {
         dockMenu.classList.add('hidden');
         dockToggleBtn.classList.add('arrow-down');
@@ -688,13 +788,11 @@
         isDockVisible = !isDockVisible;
         
         if (isDockVisible) {
-            // Hiện Dock lên và đẩy mũi tên lên trên
             dockMenu.classList.remove('hidden');
             dockToggleBtn.classList.remove('arrow-down');
             dockToggleBtn.style.bottom = 'calc(80px + env(safe-area-inset-bottom, 20px))';
             toggleIcon.innerHTML = `<polyline points="18 15 12 9 6 15"></polyline>`;
         } else {
-            // Ẩn Dock xuống và đẩy mũi tên xuống dưới (ngay trên Home bar)
             dockMenu.classList.add('hidden');
             dockToggleBtn.classList.add('arrow-down');
             dockToggleBtn.style.bottom = 'calc(30px + env(safe-area-inset-bottom, 20px))';

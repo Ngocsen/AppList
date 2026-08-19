@@ -150,13 +150,13 @@
         .dock-item img { width: 90%; height: 90%; object-fit: contain; border-radius: 6px; }
 
         /* ======================================================== */
-        /*  NÚT MŨI TÊN ẨN HIỆN DOCK (Đã tối ưu vị trí & animation) */
+        /*  NÚT MŨI TÊN ẨN HIỆN DOCK (CHỐT LẠI VỊ TRÍ MẶC ĐỊNH)    */
         /* ======================================================== */
         #dockToggleBtn {
             position: fixed;
             left: 50%;
-            transform: translateX(-50%);
-            /* Sẽ được điều chỉnh bằng JS để trôi lên/xuống */
+            /* 💡 [USER NOTE]: Mặc định nằm dưới cùng, sát thanh Home ảo */
+            bottom: calc(30px + env(safe-area-inset-bottom)); 
             z-index: 998;
             width: 34px; height: 34px;
             display: flex; align-items: center; justify-content: center;
@@ -165,9 +165,9 @@
             border: none; cursor: pointer;
             opacity: 0.8;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.2s;
-            /* 💡 Animation mặc định khi mũi tên hướng lên */
-            animation: bounceUpLoop 4s ease-in-out infinite; 
+            transition: bottom 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            /* 💡 Mặc định sẽ nhảy xuống dưới, vì lúc đầu ẩn Dock */
+            animation: bounceDownLoop 4s ease-in-out infinite; 
         }
         #dockToggleBtn:active {
             transform: translateX(-50%) scale(0.85);
@@ -180,23 +180,28 @@
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* 💡 Animation nhảy lên (3 giây nghỉ, 1 giây nhảy) */
+        /* 💡 Animation nhảy lên (Khi Dock hiện) */
         @keyframes bounceUpLoop {
-            0%, 75% { transform: translateX(-50%) translateY(0) scale(1); } /* Nghỉ 3 giây */
-            80% { transform: translateX(-50%) translateY(-8px) scale(1.1); } /* Nhảy lên */
+            0%, 75% { transform: translateX(-50%) translateY(0) scale(1); }
+            80% { transform: translateX(-50%) translateY(-8px) scale(1.1); }
             85% { transform: translateX(-50%) translateY(-3px) scale(1); }
             90%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
         }
 
-        /* 💡 Animation nhảy xuống (3 giây nghỉ, 1 giây nhảy) */
+        /* 💡 Animation nhảy xuống (Khi Dock ẩn) */
+        @keyframes bounceDownLoop {
+            0%, 75% { transform: translateX(-50%) translateY(0) scale(1); }
+            80% { transform: translateX(-50%) translateY(8px) scale(1.1); }
+            85% { transform: translateX(-50%) translateY(3px) scale(1); }
+            90%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+        }
+
         #dockToggleBtn.arrow-down {
             animation: bounceDownLoop 4s ease-in-out infinite;
         }
-        @keyframes bounceDownLoop {
-            0%, 75% { transform: translateX(-50%) translateY(0) scale(1); } /* Nghỉ 3 giây */
-            80% { transform: translateX(-50%) translateY(8px) scale(1.1); } /* Nhảy xuống */
-            85% { transform: translateX(-50%) translateY(3px) scale(1); }
-            90%, 100% { transform: translateX(-50%) translateY(0) scale(1); }
+        /* Bỏ class arrow-down sẽ tự dùng animation mặc định (bounceUpLoop) */
+        #dockToggleBtn:not(.arrow-down) {
+            animation: bounceUpLoop 4s ease-in-out infinite;
         }
 
         #dockToggleBtn.arrow-down svg {
@@ -341,6 +346,9 @@
         socialData = social; 
         langData = lang;
         renderGrid(); renderDock(); renderModal(); 
+        
+        // 💡 [USER NOTE]: Ngay khi tải xong giao diện, khởi tạo trạng thái Dock và mũi tên về vị trí dưới cùng
+        applyInitialDockState(); 
     })
     .catch(error => { 
         console.warn("⚠️ Lỗi tải dữ liệu, đang sử dụng dữ liệu dự phòng:", error);
@@ -348,6 +356,7 @@
         socialData = FALLBACK_SOCIAL; 
         langData = FALLBACK_LANG; 
         renderGrid(); renderDock(); renderModal(); 
+        applyInitialDockState(); 
     });
 
     function t(key, replacements) {
@@ -660,26 +669,34 @@
     }
 
     // ==========================================
-    // 4. 🆕 NÚT MŨI TÊN BẤM ẨN HIỆN DOCK (CÓ BỔ SUNG VỊ TRÍ TRÔI)
+    // 4. 🆕 NÚT MŨI TÊN ẨN HIỆN DOCK (ĐÃ SỬA LOGIC KHỞI TẠO LẦN ĐẦU)
     // ==========================================
-    let isDockVisible = true;
+    let isDockVisible = false; // 💡 [USER NOTE]: Đổi mặc định thành false, dock sẽ tự ẩn lúc mới mở
     const dockMenu = document.getElementById('dockMenu');
     const dockToggleBtn = document.getElementById('dockToggleBtn');
     const toggleIcon = dockToggleBtn.querySelector('svg');
+
+    // 💡 [USER NOTE]: Hàm set trạng thái ban đầu cho Dock và mũi tên
+    function applyInitialDockState() {
+        dockMenu.classList.add('hidden');
+        dockToggleBtn.classList.add('arrow-down');
+        dockToggleBtn.style.bottom = 'calc(30px + env(safe-area-inset-bottom, 20px))';
+        toggleIcon.innerHTML = `<polyline points="6 9 12 15 18 9"></polyline>`;
+    }
 
     dockToggleBtn.addEventListener('click', function() {
         isDockVisible = !isDockVisible;
         
         if (isDockVisible) {
+            // Hiện Dock lên và đẩy mũi tên lên trên
             dockMenu.classList.remove('hidden');
             dockToggleBtn.classList.remove('arrow-down');
-            // 💡 Mũi tên trôi lên trên Dock
             dockToggleBtn.style.bottom = 'calc(80px + env(safe-area-inset-bottom, 20px))';
             toggleIcon.innerHTML = `<polyline points="18 15 12 9 6 15"></polyline>`;
         } else {
+            // Ẩn Dock xuống và đẩy mũi tên xuống dưới (ngay trên Home bar)
             dockMenu.classList.add('hidden');
             dockToggleBtn.classList.add('arrow-down');
-            // 💡 Mũi tên trôi xuống ngay trên Home Indicator
             dockToggleBtn.style.bottom = 'calc(30px + env(safe-area-inset-bottom, 20px))';
             toggleIcon.innerHTML = `<polyline points="6 9 12 15 18 9"></polyline>`;
         }

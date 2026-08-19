@@ -113,7 +113,6 @@
         .modal-item span { font-size: 10px; text-align: center; color: #333; }
         .close-modal { display: block; width: 100%; margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.05); border: none; border-radius: 50px; font-weight: 600; color: #555; cursor: pointer; }
 
-        /* DOCK */
         #dockMenu {
             position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%);
             background: rgba(255, 255, 255, 0.25);
@@ -135,7 +134,6 @@
         .dock-item:active { transform: scale(0.85); background: rgba(255,255,255,0.8); }
         .dock-item img { width: 90%; height: 90%; object-fit: contain; border-radius: 6px; }
 
-        /* POPUP MENU */
         .context-menu {
             position: fixed; z-index: 9999;
             background: rgba(255, 255, 255, 0.85);
@@ -167,7 +165,6 @@
         .context-menu .menu-item:active { background: rgba(0, 0, 0, 0.08); }
         .context-menu .menu-item.delete { color: #ff3b30; }
 
-        /* DARK MODE */
         @media (prefers-color-scheme: dark) {
             body { background: linear-gradient(135deg, #1e1b4b, #0f172a, #2e1065, #1e3a8a); background-size: 300% 300%; }
             .app-container { background: rgba(30, 27, 75, 0.3); border: 1px solid rgba(255,255,255,0.05); }
@@ -218,30 +215,24 @@
 
 <script>
     // ==========================================
-    // 1. 📦 TẢI DỮ LIỆU (CÓ CHỐNG CACHE TUYỆT ĐỐI)
+    // 1. 📦 TẢI DỮ LIỆU (Đã quay lại cách đơn giản như file test-load)
     // ==========================================
     let appDatabase = {}; 
     let socialData = {};
-    
-    // Dùng timestamp để phá cache GitHub & Safari mỗi lần load
-    const timestamp = Date.now();
-    
+
     async function loadData() {
         try {
-            // Tải db trước (xem như ưu tiên cao)
-            const dbRes = await fetch('db.json?t=' + timestamp);
+            const dbRes = await fetch('db.json');
             appDatabase = await dbRes.json();
 
-            // Tải social sau (nếu social lỗi, chỉ mất icon dock, app vẫn chạy)
             try {
-                const socialRes = await fetch('social.json?t=' + timestamp);
+                const socialRes = await fetch('social.json');
                 socialData = await socialRes.json();
             } catch (socialError) {
-                console.warn("Lỗi social.json (có thể chưa cập nhật xong):", socialError);
-                socialData = {}; // Không để nó crash cả app
+                console.warn("Không tải được social.json:", socialError);
+                socialData = {};
             }
 
-            // Render giao diện sau khi tải xong
             renderGrid(); 
             renderDock(); 
             renderModal(); 
@@ -249,13 +240,13 @@
             
         } catch (dbError) {
             console.error("Lỗi DB chính:", dbError);
-            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu!<br>Kiểm tra xem file <b>'db.json'</b> có lỗi dấu phẩy/nháy không.</p>`;
+            document.getElementById('appGrid').innerHTML = `<p style="color:red; grid-column: 1/-1; padding:20px; text-align:center;">🚨 Lỗi tải dữ liệu!<br>Kiểm tra file <b>'db.json'</b>.</p>`;
         }
     }
     loadData();
 
     // ==========================================
-    // 2. ⚙️ LOGIC CHÍNH
+    // 2. ⚙️ LOGIC CHÍNH (Giữ nguyên - đã chạy đúng)
     // ==========================================
     const STORAGE_KEY = 'myAppList';
     const MAX_APPS = 16;

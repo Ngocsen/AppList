@@ -38,20 +38,18 @@
         }
         .pill-btn:active { transform: scale(0.96); }
         
-        /* 💡 [UPDATE] Chỉnh Grid 3 cột */
+        /* 💡 [CẬP NHẬT V8.2] Chỉnh Grid chính xác 4 cột */
         .app-grid { 
             display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 18px 12px; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 18px 10px; 
             justify-items: center; 
         }
-        /* Trên màn hình lớn (iPad) giữ nguyên 4 cột cho đẹp */
-        @media (min-width: 640px) { .app-grid { grid-template-columns: repeat(4, 1fr); } }
-        @media (min-width: 900px) { .app-grid { grid-template-columns: repeat(5, 1fr); } }
+        /* Giữ 4 cột cho mọi kích thước màn hình (đảm bảo 12 app xếp gọn 3 hàng) */
 
         .app-item { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; cursor: pointer; }
         
-        /* 💡 [UPDATE] Bỏ khung, bỏ nền cho icon */
+        /* Bỏ khung, bỏ nền cho icon */
         .icon-wrapper { 
             width: 65px; height: 65px; 
             border-radius: 16px; 
@@ -129,7 +127,6 @@
             padding: 10px 0; width: 100%; border-radius: 50px;
             border: 1px solid rgba(255,255,255,0.4); background: rgba(255,255,255,0.3);
             font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s;
-            /* 💡 Màu chữ tự động sáng/tối */
             color: #1e1e2f; 
         }
         #modalMoreBtn button:active { transform: scale(0.96); background: rgba(255,255,255,0.6); }
@@ -206,7 +203,7 @@
         <input type="text" class="search-box" id="searchBox" placeholder="Tìm kiếm ứng dụng..." oninput="searchAppsStatic(this.value)" />
         <div class="modal-list" id="modalList"></div>
         
-        <!-- 💡 [UPDATE] Sửa text thành "Thêm ứng dụng" và dùng key ngôn ngữ -->
+        <!-- Nút Thêm ứng dụng dùng key ngôn ngữ -->
         <div id="modalMoreBtn">
             <button onclick="focusSearch()">${t('modal.view_more')}</button>
         </div>
@@ -406,7 +403,6 @@
         });
         if (foundIds.length === 0) { modalList.innerHTML = `<div style="grid-column: 1/-1; padding:20px; text-align:center; opacity:0.6;">Không tìm thấy ứng dụng. Gửi yêu cầu cho cộng đồng!</div>`; return; }
         
-        // Khi tìm kiếm, không giới hạn 12 mục nữa mà hiển thị tối đa 80 kết quả
         const searchResults = foundIds.slice(0, 80); 
         
         searchResults.forEach(id => {
@@ -461,7 +457,6 @@
         const selectedIds = getSelectedApps();
         const allAvailableIds = Object.keys(appDatabase).filter(id => !selectedIds.includes(id));
         
-        // 💡 Chỉ lấy 12 app đầu tiên
         const initialBatch = allAvailableIds.slice(0, INITIAL_DISPLAY_COUNT);
         
         modalList.innerHTML = '';
@@ -473,7 +468,6 @@
         const moreBtn = document.getElementById('modalMoreBtn');
         if (allAvailableIds.length > INITIAL_DISPLAY_COUNT) {
             moreBtn.style.display = 'block';
-            // 💡 Set nội dung text cho nút "Thêm ứng dụng" bằng key ngôn ngữ
             moreBtn.querySelector('button').innerText = t('modal.view_more');
         } else {
             moreBtn.style.display = 'none';

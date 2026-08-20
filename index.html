@@ -279,7 +279,7 @@
     const STORAGE_NAME_KEY = 'myAppNames';
     const STORAGE_CUSTOM_KEY = 'myCustomApps'; // 💡 Key mới để lưu App tìm kiếm
     const MAX_APPS = 16;
-    const PROXY_URL = 'https://script.google.com/macros/s/AKfycbxkUmA-IWUiunfyz64SfhPVslSIJAOu9DlvmlSlLOo/dev?term='; // 💡 URL Proxy Cloudflare của bạn
+    const PROXY_URL = 'https://script.google.com/macros/s/AKfycbytFidIgYyns-XNOUH16y8VfnsVNUvNVUjXDb5tNTmBu81x3-GawgBoMgJfvJK_BLEW/exec?term='; // 💡 URL Proxy Cloudflare của bạn
     const grid = document.getElementById('appGrid');
     const modal = document.getElementById('addAppModal');
     const modalList = document.getElementById('modalList');
@@ -464,8 +464,8 @@
                 });
             })
             .catch(err => {
-                console.error("Lỗi tìm kiếm API:", err);
-                modalList.innerHTML = `<div style="grid-column: 1/-1; padding:20px; text-align:center; color:red;">❌ Lỗi kết nối đến App Store! Kiểm tra Proxy.</div>`;
+                console.error("Lỗi AppList chi tiết:", err);
+                modalList.innerHTML = `<div style="grid-column: 1/-1; padding:20px; text-align:center; color:red;">❌ Lỗi chi tiết: ${err.message || 'Lỗi không xác định (Kiểm tra Console)'}</div>`;
             });
         }, 500);
     }

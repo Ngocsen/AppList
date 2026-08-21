@@ -9,6 +9,7 @@
   "button": {
     "add": "Add",
     "close": "Close",
+    "view_more": "More",
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
